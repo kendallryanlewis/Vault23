@@ -14,5 +14,5 @@ echo 'export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"' >> "$HOME/.zprofile"
 brew install node
 
 # Install Angular app dependencies
-cd "$CI_WORKSPACE/closet-web"
+cd "$CI_PRIMARY_REPOSITORY_PATH/closet-web"
 npm ci
