@@ -42,12 +42,41 @@
                 }
             </div>
             <!-- 3 × 2 photo grid -->
-            <div class="home-tab__grid">
+            @if (gridEditMode()) {
+            <div class="home-tab__grid-edit-backdrop" (click)="exitGridEditMode()"></div>
+            }
+            <div class="home-tab__grid" [class.home-tab__grid--editing]="gridEditMode()">
                 @for (slot of homeGridSlots(); track $index) {
                 @if (slot) {
+                @if (slot.type === 'tutorial') {
+                <div class="home-tab__grid-card home-tab__grid-card--tutorial"
+                    [class.home-tab__grid-card--editing]="gridEditMode()"
+                    (click)="gridEditMode() ? $event.stopPropagation() : openHomeGridSlot(slot)"
+                    (touchstart)="onGridTouchStart(slot, $event)" (touchend)="onGridTouchEnd()"
+                    (touchmove)="onGridTouchEnd()">
+                    <img [src]="slot.imageUrl" alt="Tutorial" loading="lazy" />
+                    @if (gridEditMode()) {
+                    <button class="home-tab__grid-remove" (click)="removeGridItem(slot, $event)" aria-label="Remove">
+                        <span class="material-symbols-outlined">do_not_disturb_on</span>
+                    </button>
+                    }
+                    <div class="home-tab__grid-tutorial-badge">
+                        <span class="material-symbols-outlined">play_circle</span>
+                        <span class="home-tab__grid-tutorial-label">Start Tour</span>
+                    </div>
+                </div>
+                } @else {
                 <div class="home-tab__grid-card" [class.home-tab__grid-card--user]="slot.type === 'user'"
-                    (click)="openHomeGridSlot(slot)">
+                    [class.home-tab__grid-card--editing]="gridEditMode()"
+                    (click)="gridEditMode() ? $event.stopPropagation() : openHomeGridSlot(slot)"
+                    (touchstart)="onGridTouchStart(slot, $event)" (touchend)="onGridTouchEnd()"
+                    (touchmove)="onGridTouchEnd()">
                     <img [src]="slot.imageUrl" [alt]="slot.name" loading="lazy" />
+                    @if (gridEditMode()) {
+                    <button class="home-tab__grid-remove" (click)="removeGridItem(slot, $event)" aria-label="Remove">
+                        <span class="material-symbols-outlined">do_not_disturb_on</span>
+                    </button>
+                    }
                     @if (slot.type === 'user') {
                     <div class="home-tab__grid-user-label">
                         <span class="material-symbols-outlined">storefront</span>
@@ -58,8 +87,10 @@
                         'checkroom' : 'photo_camera' }}</span>
                     }
                 </div>
+                }
                 } @else {
-                <div class="home-tab__grid-card home-tab__grid-card--empty" (click)="goToProfile()">
+                <div class="home-tab__grid-card home-tab__grid-card--empty"
+                    (click)="gridEditMode() ? exitGridEditMode() : goToProfile()">
                     <span class="material-symbols-outlined">add</span>
                 </div>
                 }

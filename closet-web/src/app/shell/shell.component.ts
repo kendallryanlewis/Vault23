@@ -12,11 +12,12 @@ import { CameraStateService } from '../core/services/camera-state.service';
 import { SettingsService } from '../core/services/settings.service';
 import { PushService } from '../core/services/push.service';
 import { OnboardingComponent } from '../features/onboarding/onboarding.component';
+import { TutorialOverlayComponent } from '../features/home/tutorial-overlay/tutorial-overlay.component';
 
 @Component({
   selector: 'app-shell',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, OnboardingComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, OnboardingComponent, TutorialOverlayComponent],
   templateUrl: './shell.component.html',
   styleUrl: './shell.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

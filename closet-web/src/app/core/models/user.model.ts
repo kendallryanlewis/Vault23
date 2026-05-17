@@ -46,9 +46,16 @@ export interface HomeDisplayItem {
     id: string;
     imageUrl: string;
     name: string;
-    type: 'sneaker' | 'post' | 'user';
+    type: 'sneaker' | 'post' | 'user' | 'tutorial';
     brand?: string;
     sku?: string;
     colorway?: string;
     uid?: string;
 }
+
+export const TUTORIAL_GRID_ITEM: HomeDisplayItem = {
+    id: '__tutorial__',
+    type: 'tutorial',
+    name: 'Welcome to Vault23',
+    imageUrl: '/assets/backgrounds/Background_1.png',
+};

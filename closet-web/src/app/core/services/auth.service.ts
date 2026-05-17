@@ -10,6 +10,7 @@ import {
   signInWithPopup,
   onAuthStateChanged,
   updateProfile,
+  deleteUser,
   User as FirebaseUser,
 } from '@angular/fire/auth';
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
@@ -135,6 +136,14 @@ export class AuthService {
 
   async logout(): Promise<void> {
     await signOut(this.auth);
+    this.router.navigate(['/auth/login']);
+  }
+
+  async deleteAccount(): Promise<void> {
+    const user = this.auth.currentUser;
+    if (!user) return;
+    await this.userService.deleteAccountData(user.uid);
+    await deleteUser(user);
     this.router.navigate(['/auth/login']);
   }
 }

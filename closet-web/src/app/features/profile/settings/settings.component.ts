@@ -46,6 +46,9 @@ export class SettingsComponent implements OnInit, OnDestroy {
     storePolicies = signal('');
     wallpaperPreview = signal<string | null>(null);
     wallpaperUploading = signal(false);
+    confirmingDelete = signal(false);
+    deleting = signal(false);
+    deleteError = signal('');
     hiddenUsers = toSignal(
         toObservable(this.authService.currentUser).pipe(
             switchMap(u => u
@@ -217,6 +220,28 @@ export class SettingsComponent implements OnInit, OnDestroy {
 
     async logout(): Promise<void> {
         await this.authService.logout();
+    }
+
+    async deleteAccount(): Promise<void> {
+        if (!this.confirmingDelete()) {
+            this.confirmingDelete.set(true);
+            return;
+        }
+        this.deleting.set(true);
+        this.deleteError.set('');
+        try {
+            await this.authService.deleteAccount();
+        } catch (e: any) {
+            const code = e?.code ?? '';
+            if (code === 'auth/requires-recent-login') {
+                this.deleteError.set('Please sign out and sign back in, then try again.');
+            } else {
+                this.deleteError.set(e.message ?? 'Failed to delete account.');
+            }
+            this.confirmingDelete.set(false);
+        } finally {
+            this.deleting.set(false);
+        }
     }
 
     async unhideUser(authorUid: string): Promise<void> {

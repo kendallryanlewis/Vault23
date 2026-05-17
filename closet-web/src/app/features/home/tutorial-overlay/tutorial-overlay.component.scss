@@ -1,0 +1,177 @@
+:host {
+    display: contents;
+}
+
+.tut {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    pointer-events: none;
+
+    // ── Four-panel mask panels ───────────────────────────────────────────────
+    &__mask {
+        position: absolute;
+        background: rgba(0, 0, 0, 0.72);
+        pointer-events: auto;
+
+        &--full {
+            inset: 0;
+        }
+    }
+
+    // ── Pulsing ring around highlighted element ────────────────────────────
+    &__pulse-ring {
+        position: absolute;
+        border-radius: 12px;
+        border: 2px solid var(--app-accent, #F97316);
+        pointer-events: none;
+        z-index: 2;
+        animation: tutPulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes tutPulse {
+
+        0%,
+        100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.5;
+            transform: scale(1.07);
+        }
+    }
+
+    // ── Tooltip card ───────────────────────────────────────────────────────
+    &__card {
+        position: absolute;
+        // Horizontal: 16 px margin + device safe-area side insets
+        left: calc(16px + env(safe-area-inset-left, 0px));
+        right: calc(16px + env(safe-area-inset-right, 0px));
+        // top/bottom are driven by cardStyle() in TS using max() + env()
+        background: var(--surface, #1c1c1e);
+        border-radius: 18px;
+        padding: 20px 20px 24px;
+        pointer-events: auto;
+        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.6);
+        animation: tutSlideIn 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes tutSlideIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    &__card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+
+    &__step-counter {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--text-muted, #8e8e93);
+    }
+
+    &__cancel {
+        background: none;
+        border: none;
+        padding: 4px 0;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-muted, #8e8e93);
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+
+        &:active {
+            opacity: 0.6;
+        }
+    }
+
+    // ── Progress dots ──────────────────────────────────────────────────────
+    &__progress {
+        display: flex;
+        gap: 5px;
+        margin-bottom: 14px;
+    }
+
+    &__progress-dot {
+        height: 3px;
+        flex: 1;
+        border-radius: 2px;
+        background: var(--border, rgba(255, 255, 255, 0.12));
+        transition: background 0.25s;
+
+        &--done {
+            background: var(--app-accent, #F97316);
+            opacity: 0.5;
+        }
+
+        &--active {
+            background: var(--app-accent, #F97316);
+        }
+    }
+
+    &__title {
+        font-size: 20px;
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        color: var(--text-primary, #fff);
+        margin: 0 0 8px;
+    }
+
+    &__body {
+        font-size: 14px;
+        line-height: 1.55;
+        color: var(--text-secondary, rgba(255, 255, 255, 0.7));
+        margin: 0 0 18px;
+    }
+
+    // ── Tap hint line ──────────────────────────────────────────────────────
+    &__tap-hint {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--app-accent, #F97316);
+        margin: 0;
+        animation: tutPulse 1.4s ease-in-out infinite;
+
+        .material-symbols-outlined {
+            font-size: 18px;
+        }
+    }
+
+    // ── Next button ────────────────────────────────────────────────────────
+    &__next {
+        width: 100%;
+        padding: 14px;
+        background: var(--app-accent, #F97316);
+        border: none;
+        border-radius: 12px;
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        -webkit-tap-highlight-color: transparent;
+        transition: opacity 0.15s;
+
+        &:active {
+            opacity: 0.8;
+        }
+
+        .material-symbols-outlined {
+            font-size: 18px;
+        }
+    }
+}

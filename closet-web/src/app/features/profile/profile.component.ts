@@ -602,6 +602,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
         this.listingQuantity.set(1);
         this.listingNotes.set('');
         this.listingSheetSneaker.set(shoe);
+        this.uiState.navHidden.set(true);
         this.closeContextMenu();
     }
 
@@ -613,6 +614,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     closeListingSheet(): void {
         this.listingSheetSneaker.set(null);
         this.editingListingId.set(null);
+        this.uiState.navHidden.set(false);
     }
 
     async saveListing(): Promise<void> {
@@ -717,5 +719,6 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
         };
         this.closeStoreListingSheet();
         this.listingSheetSneaker.set(shoe);
+        this.uiState.navHidden.set(true);
     }
 }

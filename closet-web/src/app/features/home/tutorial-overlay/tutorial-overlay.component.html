@@ -1,0 +1,44 @@
+<div class="tut">
+    <!-- Four-panel mask: each panel blocks outside the highlight; centre is open so element is tappable -->
+    @if (highlightRect(); as rect) {
+    <div class="tut__mask" [style]="maskTop(rect)"></div>
+    <div class="tut__mask" [style]="maskBottom(rect)"></div>
+    <div class="tut__mask" [style]="maskLeft(rect)"></div>
+    <div class="tut__mask" [style]="maskRight(rect)"></div>
+    <div class="tut__pulse-ring" [style]="pulseStyle(rect)"></div>
+    } @else {
+    <div class="tut__mask tut__mask--full"></div>
+    }
+
+    <!-- Tooltip card -->
+    <div class="tut__card" [style]="cardStyle()">
+        <div class="tut__card-header">
+            <span class="tut__step-counter">{{ stepIndex() + 1 }} / {{ steps.length }}</span>
+            <button class="tut__cancel" (click)="close()" aria-label="Cancel tutorial">Cancel</button>
+        </div>
+
+        <div class="tut__progress">
+            @for (s of steps; track $index) {
+            <div class="tut__progress-dot" [class.tut__progress-dot--active]="$index === stepIndex()"
+                [class.tut__progress-dot--done]="$index < stepIndex()"></div>
+            }
+        </div>
+
+        <h2 class="tut__title">{{ currentStep().title }}</h2>
+        <p class="tut__body">{{ currentStep().body }}</p>
+
+        @if (currentStep().waitForTap) {
+        <p class="tut__tap-hint">
+            <span class="material-symbols-outlined">touch_app</span>
+            Tap the highlighted item to continue
+        </p>
+        } @else {
+        <button class="tut__next" (click)="next()">
+            {{ isLast() ? 'Done' : 'Next' }}
+            @if (!isLast()) {
+            <span class="material-symbols-outlined">arrow_forward</span>
+            }
+        </button>
+        }
+    </div>
+</div>

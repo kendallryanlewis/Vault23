@@ -5,7 +5,7 @@ import { filter, take, switchMap, map } from 'rxjs/operators';
 import { forkJoin, from } from 'rxjs';
 import { UserService } from '../../core/services/user.service';
 import { NewsService } from '../../core/services/news.service';
-import { HomeDisplayItem, UserPublicProfile } from '../../core/models/user.model';
+import { HomeDisplayItem, UserPublicProfile, TUTORIAL_GRID_ITEM } from '../../core/models/user.model';
 import { NewsArticle } from '../../core/models/news.model';
 
 export interface HomeResolvedData {
@@ -35,7 +35,12 @@ export const homeResolver: ResolveFn<HomeResolvedData> = () => {
     take(1),
     switchMap(user =>
       forkJoin({
-        displayItems: from(userService.getDisplayItems(user!.uid)),
+        displayItems: from(userService.getDisplayItems(user!.uid)).pipe(
+          map(items => {
+            const hasTutorial = items.some(i => i.id === '__tutorial__');
+            return hasTutorial ? items : [TUTORIAL_GRID_ITEM, ...items];
+          })
+        ),
         myProfile: from(userService.getPublicProfile(user!.uid)),
         stats: forkJoin({
           posts: from(userService.getPostCount(user!.uid)),

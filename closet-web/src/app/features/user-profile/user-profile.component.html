@@ -8,9 +8,8 @@
 
     <!-- Collapsing cover: sticky, shrinks as user scrolls -->
     <div class="up-cover">
-        @if (p.backgroundImageUrl || p.photoURL) {
-        <img class="up-cover__bg" [src]="p.backgroundImageUrl || p.photoURL" aria-hidden="true" />
-        }
+        <img class="up-cover__bg" [src]="p.backgroundImageUrl || '/assets/backgrounds/Background_1.png'"
+            aria-hidden="true" />
         <div class="up-cover__overlay"></div>
 
         <!-- Button row — stays at top of cover as it collapses -->

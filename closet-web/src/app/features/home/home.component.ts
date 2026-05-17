@@ -414,11 +414,30 @@ export class HomeComponent implements OnDestroy {
     this.router.navigate(['/app/profile']);
   }
 
+  // ── Tutorial ───────────────────────────────────────────────────────────────
+  tutorialOpen = signal(false);
+
+  openTutorial(): void {
+    this.tutorialOpen.set(true);
+    this.uiState.navHidden.set(false); // keep nav visible so highlights work
+  }
+
+  closeTutorial(): void {
+    this.tutorialOpen.set(false);
+  }
+
   // ── Home grid item open/close ─────────────────────────────────────────────
   selectedGridPost = signal<Post | null>(null);
   selectedGridSneaker = signal<CatalogResult | null>(null);
+  gridEditMode = signal(false);
+  private _longPressTimer: ReturnType<typeof setTimeout> | null = null;
 
   openHomeGridSlot(item: HomeDisplayItem): void {
+    if (item.type === 'tutorial') {
+      this.uiState.navHidden.set(false);
+      this.uiState.tutorialOpen.set(true);
+      return;
+    }
     if (item.type === 'user') {
       const uid = item.uid ?? item.id;
       this.router.navigate(['/app/users', uid]);
@@ -457,6 +476,33 @@ export class HomeComponent implements OnDestroy {
     this.selectedGridPost.set(null);
     this.selectedGridSneaker.set(null);
     this.uiState.navHidden.set(false);
+  }
+
+  onGridTouchStart(slot: HomeDisplayItem, event: TouchEvent): void {
+    if (this.gridEditMode()) return;
+    this._longPressTimer = setTimeout(() => {
+      this.gridEditMode.set(true);
+    }, 500);
+  }
+
+  onGridTouchEnd(): void {
+    if (this._longPressTimer !== null) {
+      clearTimeout(this._longPressTimer);
+      this._longPressTimer = null;
+    }
+  }
+
+  exitGridEditMode(): void {
+    this.gridEditMode.set(false);
+  }
+
+  async removeGridItem(slot: HomeDisplayItem, event: Event): Promise<void> {
+    event.stopPropagation();
+    const uid = this.authService.uid;
+    const updated = this.displayItems().filter(item => item.id !== slot.id);
+    this.displayItems.set(updated);
+    if (!updated.length) this.gridEditMode.set(false);
+    if (uid) await this.userService.saveDisplayItems(uid, updated);
   }
 
   // ── Home tab ───────────────────────────────────────────────────────────────

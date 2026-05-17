@@ -218,6 +218,13 @@ export class UserService {
         await setDoc(doc(this.fs, `users/${uid}`), { displayItems: items }, { merge: true });
     }
 
+    async deleteAccountData(uid: string): Promise<void> {
+        await Promise.all([
+            deleteDoc(doc(this.fs, `users/${uid}`)),
+            deleteDoc(doc(this.fs, `userSettings/${uid}`)),
+        ]);
+    }
+
     async getFriends(currentUid: string | null, targetUid: string): Promise<UserPublicProfile[]> {
         const targetFollowersSnap = await getDocs(collection(this.fs, `users/${targetUid}/followers`));
         const targetFollowerUids = targetFollowersSnap.docs.map(d => d.id);

@@ -4,4 +4,5 @@ import { Injectable, signal } from '@angular/core';
 export class UiStateService {
     readonly detailOpen = signal(false);
     readonly navHidden = signal(false);
+    readonly tutorialOpen = signal(false);
 }

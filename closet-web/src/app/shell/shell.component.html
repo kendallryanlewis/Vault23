@@ -7,6 +7,10 @@
     <app-onboarding (done)="showOnboarding.set(false)" />
     }
 
+    @if (uiState.tutorialOpen()) {
+    <app-tutorial-overlay (closed)="uiState.tutorialOpen.set(false)"></app-tutorial-overlay>
+    }
+
     <nav class="tab-bar"
         [class.tab-bar--hidden]="uiState.detailOpen() || uiState.navHidden() || keyboard.keyboardHeight() > 0 || showOnboarding()">
         <a class="tab-bar__item" routerLink="/app/home" routerLinkActive="tab-bar__item--active"

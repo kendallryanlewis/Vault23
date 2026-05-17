@@ -271,6 +271,22 @@
 
             <div class="form-card form-card--danger mb-5">
                 <button class="sign-out-btn" (click)="logout()">Sign out</button>
+                <div class="form-card__divider"></div>
+                @if (confirmingDelete()) {
+                <div class="delete-confirm">
+                    <p class="delete-confirm__text">This will permanently delete your account and all associated data.
+                        This cannot be undone.</p>
+                    <button class="delete-confirm__btn" (click)="deleteAccount()" [disabled]="deleting()">
+                        {{ deleting() ? 'Deleting…' : 'Yes, delete my account' }}
+                    </button>
+                    <button class="delete-confirm__cancel" (click)="confirmingDelete.set(false)">Cancel</button>
+                </div>
+                } @else {
+                <button class="delete-account-btn" (click)="deleteAccount()">Delete Account</button>
+                }
+                @if (deleteError()) {
+                <p class="delete-error">{{ deleteError() }}</p>
+                }
             </div>
         </div>
     </div>
