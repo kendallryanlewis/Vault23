@@ -121,8 +121,27 @@ export class UserProfileComponent implements OnInit {
     // Overlay state
     selectedSneakerIndex = signal<number | null>(null);
     selectedPostIndex = signal<number | null>(null);
+    selectedListing = signal<Listing | null>(null);
     slideAnimating = signal(false);
     carouselDir = signal<'left' | 'right'>('right');
+
+    readonly selectedListingResult = computed<CatalogResult | null>(() => {
+        const l = this.selectedListing();
+        if (!l) return null;
+        return {
+            id: l.sneakerId,
+            name: l.sneakerName,
+            brand: l.brand || extractBrandFromName(l.sneakerName),
+            colorway: '',
+            imageUrl: l.imageUrl ?? '',
+            largeImageUrl: l.imageUrl ?? '',
+            retailPrice: null,
+            lowestPrice: l.askingPrice,
+            styleId: l.sku,
+            sourceUrl: '',
+            releaseDate: null,
+        };
+    });
 
     readonly closetPreview = computed(() => this.closet().slice(0, 9));
 
@@ -257,6 +276,22 @@ export class UserProfileComponent implements OnInit {
         if (!uid) return;
         const chatId = await this.chatService.getOrCreateChat(uid, this.targetUid());
         this.router.navigate(['/app/chat', chatId]);
+    }
+
+    openListing(l: Listing): void {
+        this.selectedListing.set(l);
+    }
+
+    closeListing(): void {
+        this.selectedListing.set(null);
+    }
+
+    async openDMForListing(l: Listing): Promise<void> {
+        const uid = this.currentUid;
+        if (!uid) return;
+        const chatId = await this.chatService.getOrCreateChat(uid, this.targetUid());
+        const draft = `Hi, I'm interested in your ${l.sneakerName} (Size ${l.size}) listed at $${l.askingPrice}. Is it still available?`;
+        this.router.navigate(['/app/chat', chatId], { queryParams: { draft } });
     }
 
     openSneaker(index: number): void {

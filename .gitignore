@@ -1,0 +1,46 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Node / npm
+node_modules/
+npm-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# Angular
+closet-web/dist/
+closet-web/.angular/
+closet-web/.sass-cache/
+
+# Xcode
+ClosetApp.xcodeproj/xcuserdata/
+ClosetApp.xcodeproj/project.xcworkspace/xcuserdata/
+xcuserdata/
+build/
+DerivedData/
+*.xcarchive
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Firebase / Secrets
+ClosetApp/GoogleService-Info.plist
+Sneaker-API/firebase-adminsdk*.json
+.env
+.env.*
+*.env
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db

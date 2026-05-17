@@ -51,10 +51,12 @@
                 <span class="profile-page__stat-value">{{ followingCount() }}</span>
                 <span class="profile-page__stat-label">Following</span>
             </button>
+            @if (isStoreBrand()) {
             <button class="profile-page__stat profile-page__stat--btn" (click)="setTab('store')">
                 <span class="profile-page__stat-value">{{ listings().length }}</span>
                 <span class="profile-page__stat-label">For Sale</span>
             </button>
+            }
         </div>
 
         <!-- Icon tab bar -->
@@ -71,10 +73,12 @@
                 (click)="setTab('wishlist')" aria-label="Wishlist">
                 <span class="material-symbols-outlined">favorite</span>
             </button>
+            @if (isStoreBrand()) {
             <button class="profile-page__tab-btn" [class.profile-page__tab-btn--active]="tab() === 'store'"
                 (click)="setTab('store')" aria-label="Store">
                 <span class="material-symbols-outlined">storefront</span>
             </button>
+            }
         </div>
     </div>
 
@@ -97,7 +101,7 @@
                         (pointerup)="onCardPointerUp(s, i)" (pointercancel)="onCardPointerCancel()"
                         (pointermove)="onCardPointerMove($event)">
                         <div class="profile-page__accent"></div>
-                        @if (hasListing(s.id)) {
+                        @if (isStoreBrand() && hasListing(s.id)) {
                         <span class="profile-page__for-sale-badge">For Sale</span>
                         }
                         @if (s.imageUrl) {
@@ -124,7 +128,7 @@
                     <div class="profile-page__card" [style.grid-column]="'span ' + getColSpan(p.id)"
                         [style.grid-row]="'span ' + getRowSpan(p.id)" (pointerdown)="onPostCardPointerDown(p, $event)"
                         (pointerup)="onPostCardPointerUp(p, i)" (pointercancel)="onCardPointerCancel()">
-                        @if (hasPostListing(p.id)) {
+                        @if (isStoreBrand() && hasPostListing(p.id)) {
                         <span class="profile-page__for-sale-badge">For Sale</span>
                         }
                         <img class="profile-page__card-img" [src]="p.imageUrl" [alt]="p.caption" loading="lazy" />
@@ -300,6 +304,7 @@
         {{ isDisplayItem(shoe.id) ? 'Remove from Home' : 'Set as display item' }}
     </button>
 
+    @if (isStoreBrand()) {
     <button class="profile-ctx__action" (click)="openListingSheet(shoe)">
         <span class="material-symbols-outlined">add_shopping_cart</span>
         Add Size Listing
@@ -308,8 +313,9 @@
     @if (listingCount(shoe.id) > 0) {
     <button class="profile-ctx__action" (click)="goToStore(shoe)">
         <span class="material-symbols-outlined">storefront</span>
-        Manage {{ listingCount(shoe.id) }} listing{{ listingCount(shoe.id) !== 1 ? 's' : '' }} →
+        Manage {{ listingCount(shoe.id) }} listing{{ listingCount(shoe.id) !== 1 ? 's' : '' }} &rarr;
     </button>
+    }
     }
 
     @if (confirmingDelete()) {
@@ -368,6 +374,7 @@
         <span class="material-symbols-outlined">{{ isPostDisplayItem(pid) ? 'home' : 'add_home' }}</span>
         {{ isPostDisplayItem(pid) ? 'Remove from Home' : 'Set as display item' }}
     </button>
+    @if (isStoreBrand()) {
     @if (postSheetPost(); as post) {
     @if (hasPostListing(post.id)) {
     <button class="profile-ctx__action profile-ctx__action--warn" (click)="removePostListing(post)">
@@ -379,6 +386,7 @@
         <span class="material-symbols-outlined">storefront</span>
         List for Sale
     </button>
+    }
     }
     }
 </div>

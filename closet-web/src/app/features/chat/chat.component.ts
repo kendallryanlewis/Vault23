@@ -67,6 +67,8 @@ export class ChatComponent implements OnInit, AfterViewInit, AfterViewChecked, O
     ngOnInit(): void {
         this.uiState.navHidden.set(true);
         this.chatId = this.route.snapshot.paramMap.get('chatId') ?? '';
+        const draft = this.route.snapshot.queryParamMap.get('draft');
+        if (draft) this.messageText.set(draft);
         const uid = this.currentUid;
 
         if (uid && this.chatId) {

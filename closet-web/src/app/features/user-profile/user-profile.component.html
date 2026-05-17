@@ -126,7 +126,7 @@
         } @else {
         <div class="up-listing-grid">
             @for (l of listings(); track l.id) {
-            <div class="up-listing-card">
+            <div class="up-listing-card" (click)="openListing(l)">
                 @if (l.imageUrl) {
                 <img class="up-listing-card__img" [src]="l.imageUrl" [alt]="l.sneakerName" loading="lazy" />
                 }
@@ -135,7 +135,7 @@
                     <p class="up-listing-card__meta">Size {{ l.size }} · {{ l.condition }}</p>
                     <p class="up-listing-card__price">${{ l.askingPrice }}</p>
                     @if (!isOwnProfile()) {
-                    <button class="up-listing-card__dm-btn" (click)="openDM()">Message to Buy</button>
+                    <button class="up-listing-card__dm-btn" (click)="openDMForListing(l); $event.stopPropagation()">Message to Buy</button>
                     }
                 </div>
             </div>
@@ -317,6 +317,14 @@
 <app-detail-panel [item]="selectedSneakerItem()" [selectedIndex]="selectedSneakerIndex()!"
     [catalogResultsLength]="closet().length" [slideAnimating]="slideAnimating()" [carouselDir]="carouselDir()"
     (closed)="closeSneaker()" (navigatedNext)="navigateNextSneaker()" (navigatedPrev)="navigatePrevSneaker()">
+</app-detail-panel>
+}
+
+<!-- Store listing detail overlay -->
+@if (selectedListingResult() !== null) {
+<app-detail-panel [item]="selectedListingResult()" [selectedIndex]="0" [catalogResultsLength]="1"
+    [slideAnimating]="false" [carouselDir]="'right'"
+    (closed)="closeListing()" (navigatedNext)="closeListing()" (navigatedPrev)="closeListing()">
 </app-detail-panel>
 }
 

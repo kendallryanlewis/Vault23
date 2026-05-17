@@ -73,7 +73,8 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     scrolled = signal(false);
 
     tab = signal<Tab>('closet');
-    tabIndex = computed(() => TABS.indexOf(this.tab()));
+    activeTabs = computed<Tab[]>(() => this.isStoreBrand() ? TABS : TABS.filter(t => t !== 'store') as Tab[]);
+    tabIndex = computed(() => this.activeTabs().indexOf(this.tab()));
     collectionValue = signal<number | null>(null);
     gridSizes = signal<Record<string, GridSize>>({});
     followerCount = toSignal(
@@ -326,6 +327,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     setTab(t: Tab): void {
+        if (t === 'store' && !this.isStoreBrand()) return;
         this.tab.set(t);
         if (t === 'closet') this.loadCollectionValue();
     }
@@ -364,9 +366,10 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
     private readonly _onTabSwipeEnd = (e: TouchEvent): void => {
         const dx = (e.changedTouches[0]?.clientX ?? this.swipeStartX) - this.swipeStartX;
+        const tabs = this.activeTabs();
         const idx = this.tabIndex();
-        if (dx < -48 && idx < TABS.length - 1) this.setTab(TABS[idx + 1]);
-        else if (dx > 48 && idx > 0) this.setTab(TABS[idx - 1]);
+        if (dx < -48 && idx < tabs.length - 1) this.setTab(tabs[idx + 1]);
+        else if (dx > 48 && idx > 0) this.setTab(tabs[idx - 1]);
     };
 
     goToFollowers(): void {
