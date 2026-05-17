@@ -135,7 +135,8 @@
                     <p class="up-listing-card__meta">Size {{ l.size }} · {{ l.condition }}</p>
                     <p class="up-listing-card__price">${{ l.askingPrice }}</p>
                     @if (!isOwnProfile()) {
-                    <button class="up-listing-card__dm-btn" (click)="openDMForListing(l); $event.stopPropagation()">Message to Buy</button>
+                    <button class="up-listing-card__dm-btn"
+                        (click)="openDMForListing(l); $event.stopPropagation()">Message to Buy</button>
                     }
                 </div>
             </div>
@@ -323,8 +324,8 @@
 <!-- Store listing detail overlay -->
 @if (selectedListingResult() !== null) {
 <app-detail-panel [item]="selectedListingResult()" [selectedIndex]="0" [catalogResultsLength]="1"
-    [slideAnimating]="false" [carouselDir]="'right'"
-    (closed)="closeListing()" (navigatedNext)="closeListing()" (navigatedPrev)="closeListing()">
+    [slideAnimating]="false" [carouselDir]="'right'" (closed)="closeListing()" (navigatedNext)="closeListing()"
+    (navigatedPrev)="closeListing()">
 </app-detail-panel>
 }
 
