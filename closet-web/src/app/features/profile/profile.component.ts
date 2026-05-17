@@ -334,7 +334,7 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
 
     cycleGridSize(id: string): void {
         const current = this.gridSizes()[id] ?? '1x1';
-        const next: GridSize = current === '1x1' ? '2x1' : current === '2x1' ? '2x2' : '1x1';
+        const next: GridSize = current === '1x1' ? '2x1' : current === '2x1' ? '2x2' : current === '2x2' ? '1x2' : '1x1';
         this.gridSizes.update(prev => {
             const updated = { ...prev, [id]: next };
             localStorage.setItem(this.GRID_SIZES_KEY, JSON.stringify(updated));
