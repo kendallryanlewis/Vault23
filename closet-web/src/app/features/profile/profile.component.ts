@@ -602,8 +602,8 @@ export class ProfileComponent implements OnInit, AfterViewInit, OnDestroy {
         this.listingQuantity.set(1);
         this.listingNotes.set('');
         this.listingSheetSneaker.set(shoe);
-        this.uiState.navHidden.set(true);
         this.closeContextMenu();
+        this.uiState.navHidden.set(true);
     }
 
     goToStore(shoe: Sneaker): void {
