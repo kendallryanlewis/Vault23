@@ -45,7 +45,7 @@ function extractBrandFromName(name: string): string {
 }
 
 type Tab = 'closet' | 'posts' | 'wishlist' | 'store';
-type GridSize = '1x1' | '2x1' | '2x2';
+type GridSize = '1x1' | '2x1' | '2x2' | '1x2';
 
 const TABS: Tab[] = ['closet', 'posts', 'wishlist', 'store'];
 

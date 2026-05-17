@@ -211,6 +211,10 @@ export class SettingsComponent implements OnInit, OnDestroy {
         this.router.navigate(['/app/profile/help']);
     }
 
+    goPrivacyPolicy(): void {
+        this.router.navigate(['/app/profile/privacy-policy']);
+    }
+
     async logout(): Promise<void> {
         await this.authService.logout();
     }

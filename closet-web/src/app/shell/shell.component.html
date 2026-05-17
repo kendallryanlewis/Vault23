@@ -8,7 +8,7 @@
     }
 
     <nav class="tab-bar"
-        [class.tab-bar--hidden]="uiState.detailOpen() || uiState.navHidden() || keyboard.keyboardHeight() > 0">
+        [class.tab-bar--hidden]="uiState.detailOpen() || uiState.navHidden() || keyboard.keyboardHeight() > 0 || showOnboarding()">
         <a class="tab-bar__item" routerLink="/app/home" routerLinkActive="tab-bar__item--active"
             [routerLinkActiveOptions]="{exact:true}" aria-label="Home">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">

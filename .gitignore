@@ -36,6 +36,13 @@ Sneaker-API/firebase-adminsdk*.json
 .env.*
 *.env
 
+# Fastlane
+fastlane/.env
+fastlane/screenshots/
+fastlane/report.html
+fastlane/Preview.html
+fastlane/test_output/
+
 # Editor
 .vscode/
 .idea/

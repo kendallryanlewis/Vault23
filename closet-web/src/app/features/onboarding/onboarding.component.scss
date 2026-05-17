@@ -92,10 +92,6 @@
         margin: 0 0 auto;
     }
 
-    &__actions {
-        margin-top: auto;
-    }
-
     &--final {
         text-align: center;
         align-items: center;
@@ -203,11 +199,13 @@
 // ── Features list ─────────────────────────────────────────────────────────────
 .onboarding-features {
     list-style: none;
-    margin: 20px 0 auto;
+    margin: 16px 0 0;
     padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+    overflow-y: auto;
+    flex: 1;
 
     &__item {
         display: flex;
@@ -246,6 +244,40 @@
     }
 }
 
+// ── Persistent navigation footer ─────────────────────────────────────────────
+.onboarding-nav {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: auto;
+    padding-top: 32px;
+
+    &--no-back {
+        .onboarding-nav__cta {
+            flex: 1;
+        }
+    }
+
+    &__back {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 15px;
+        font-weight: 600;
+        color: var(--text-secondary);
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+
+    &__cta {
+        flex: 1;
+    }
+}
+
 // ── CTA button ────────────────────────────────────────────────────────────────
 .onboarding-btn {
     width: 100%;
@@ -256,7 +288,7 @@
     letter-spacing: 0.3px;
     border: none;
     cursor: pointer;
-    margin-top: 32px;
+    margin-top: 0;
 
     &--primary {
         background: var(--app-accent);

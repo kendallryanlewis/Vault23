@@ -21,7 +21,6 @@
                 Catalog your sneaker collection, track drops, discover releases, and connect with the culture.
                 Let's get you set up in a few steps.
             </p>
-            <button class="onboarding-btn onboarding-btn--primary" (click)="next()">Get Started</button>
         </div>
         }
 
@@ -51,12 +50,6 @@
             @if (error()) {
             <p class="onboarding-error">{{ error() }}</p>
             }
-
-            <div class="onboarding-step__actions">
-                <button class="onboarding-btn onboarding-btn--primary" [disabled]="uploading()" (click)="next()">
-                    {{ (photoPreview() || photoURL) ? 'Continue' : 'Skip for now' }}
-                </button>
-            </div>
         </div>
         }
 
@@ -73,12 +66,6 @@
                     inputmode="decimal" />
             </div>
 
-            <div class="onboarding-step__actions">
-                <button class="onboarding-btn onboarding-btn--primary" [disabled]="saving()"
-                    (click)="saveShoeSizeAndContinue()">
-                    {{ saving() ? 'Saving…' : (shoeSize().trim() ? 'Continue' : 'Skip for now') }}
-                </button>
-            </div>
         </div>
         }
 
@@ -90,36 +77,49 @@
 
             <ul class="onboarding-features">
                 <li class="onboarding-features__item">
-                    <span class="material-symbols-outlined onboarding-features__icon">home</span>
+                    <span class="material-symbols-outlined onboarding-features__icon">checkroom</span>
                     <div class="onboarding-features__text">
-                        <strong>Home Feed</strong>
-                        <span>Browse your closet and community posts.</span>
+                        <strong>Your Closet</strong>
+                        <span>Catalog every pair you own. Search for a sneaker, tap Add to Closet, and it's
+                            yours.</span>
                     </div>
                 </li>
                 <li class="onboarding-features__item">
-                    <span class="material-symbols-outlined onboarding-features__icon">search</span>
+                    <span class="material-symbols-outlined onboarding-features__icon">favorite</span>
                     <div class="onboarding-features__text">
-                        <strong>Search</strong>
-                        <span>Find any sneaker and add it to your closet.</span>
-                    </div>
-                </li>
-                <li class="onboarding-features__item">
-                    <span class="material-symbols-outlined onboarding-features__icon">photo_camera</span>
-                    <div class="onboarding-features__text">
-                        <strong>Camera</strong>
-                        <span>Post photos of your collection to the feed.</span>
+                        <strong>Wishlist</strong>
+                        <span>Save grails you're chasing. Keep your targets private until you're ready to cop.</span>
                     </div>
                 </li>
                 <li class="onboarding-features__item">
                     <span class="material-symbols-outlined onboarding-features__icon">local_fire_department</span>
                     <div class="onboarding-features__text">
                         <strong>Drops</strong>
-                        <span>Track upcoming releases and never miss a drop.</span>
+                        <span>Track upcoming releases, set reminders, and never miss a drop day again.</span>
+                    </div>
+                </li>
+                <li class="onboarding-features__item">
+                    <span class="material-symbols-outlined onboarding-features__icon">photo_camera</span>
+                    <div class="onboarding-features__text">
+                        <strong>Post &amp; Share</strong>
+                        <span>Flex your fits. Post photos of your collection to the community feed.</span>
+                    </div>
+                </li>
+                <li class="onboarding-features__item">
+                    <span class="material-symbols-outlined onboarding-features__icon">sell</span>
+                    <div class="onboarding-features__text">
+                        <strong>Marketplace</strong>
+                        <span>List shoes for sale directly from your closet. Buyers DM you to negotiate.</span>
+                    </div>
+                </li>
+                <li class="onboarding-features__item">
+                    <span class="material-symbols-outlined onboarding-features__icon">chat</span>
+                    <div class="onboarding-features__text">
+                        <strong>Messages</strong>
+                        <span>Connect with buyers, sellers, and the culture through direct messages.</span>
                     </div>
                 </li>
             </ul>
-
-            <button class="onboarding-btn onboarding-btn--primary" (click)="next()">Next</button>
         </div>
         }
 
@@ -135,11 +135,44 @@
             <p class="onboarding-step__body">
                 Head to Search to add your first pair, or check Drops for what's releasing next.
             </p>
-            <button class="onboarding-btn onboarding-btn--primary" [disabled]="saving()" (click)="finish()">
-                {{ saving() ? 'Loading…' : 'Enter the Vault' }}
-            </button>
         </div>
         }
+
+        <!-- Persistent navigation -->
+        <div class="onboarding-nav" [class.onboarding-nav--no-back]="currentStep() === 0">
+            @if (currentStep() > 0) {
+            <button class="onboarding-nav__back" (click)="back()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18">
+                    <path d="M15 18l-6-6 6-6" />
+                </svg>
+                Back
+            </button>
+            }
+            <div class="onboarding-nav__cta">
+                @if (currentStep() === 0) {
+                <button class="onboarding-btn onboarding-btn--primary" (click)="next()">Get Started</button>
+                }
+                @if (currentStep() === 1) {
+                <button class="onboarding-btn onboarding-btn--primary" [disabled]="uploading()" (click)="next()">
+                    {{ (photoPreview() || photoURL) ? 'Continue' : 'Skip' }}
+                </button>
+                }
+                @if (currentStep() === 2) {
+                <button class="onboarding-btn onboarding-btn--primary" [disabled]="saving()"
+                    (click)="saveShoeSizeAndContinue()">
+                    {{ saving() ? 'Saving…' : (shoeSize().trim() ? 'Continue' : 'Skip') }}
+                </button>
+                }
+                @if (currentStep() === 3) {
+                <button class="onboarding-btn onboarding-btn--primary" (click)="next()">Next</button>
+                }
+                @if (currentStep() === 4) {
+                <button class="onboarding-btn onboarding-btn--primary" [disabled]="saving()" (click)="finish()">
+                    {{ saving() ? 'Loading…' : 'Enter the Vault' }}
+                </button>
+                }
+            </div>
+        </div>
 
     </div>
 </div>

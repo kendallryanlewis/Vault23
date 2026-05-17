@@ -70,3 +70,34 @@ targets:
           mkdir -p "${DEST}"
           rsync -a --delete "${DIST}/" "${DEST}/"
         basedOnDependencyAnalysis: false
+
+  Vault23UITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: Vault23UITests
+    dependencies:
+      - target: Vault23
+    settings:
+      PRODUCT_BUNDLE_IDENTIFIER: com.kndl.Vault23UITests
+      DEVELOPMENT_TEAM: ""
+
+schemes:
+  Vault23:
+    build:
+      targets:
+        Vault23: all
+        Vault23UITests:
+          - test
+    test:
+      config: Debug
+      targets:
+        - Vault23UITests
+    run:
+      config: Debug
+    archive:
+      config: Release
+    analyze:
+      config: Debug
+    profile:
+      config: Release

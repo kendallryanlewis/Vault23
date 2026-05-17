@@ -1,0 +1,51 @@
+default_platform(:ios)
+
+platform :ios do
+
+  # ── Screenshots ──────────────────────────────────────────────────────────────
+  desc "Capture App Store screenshots on the iOS Simulator.
+  Requires SCREENSHOT_EMAIL and SCREENSHOT_PASSWORD env vars set in fastlane/.env"
+  lane :screenshots do
+    capture_ios_screenshots(
+      scheme:                      "Vault23",
+      project:                     "Vault23.xcodeproj",
+      devices: [
+        "iPhone 16 Pro Max",        # 6.9″  — covers all large iPhones on App Store
+        "iPhone SE (3rd generation)"# 4.7″  — smallest supported screen
+      ],
+      languages:                   ["en-US"],
+      output_directory:            "./fastlane/screenshots",
+      clear_previous_screenshots:  true,
+      override_status_bar:         true,
+      concurrent_simulators:       false,
+      stop_after_first_error:      false,
+      erase_simulator:             true,
+      environment_variables: {
+        "SCREENSHOT_EMAIL"    => ENV["SCREENSHOT_EMAIL"]    || "",
+        "SCREENSHOT_PASSWORD" => ENV["SCREENSHOT_PASSWORD"] || ""
+      }
+    )
+    UI.success "Screenshots saved to ./fastlane/screenshots/"
+  end
+
+  # ── Upload screenshots ───────────────────────────────────────────────────────
+  desc "Upload screenshots to App Store Connect (no binary upload, no metadata)"
+  lane :upload_screenshots do
+    upload_to_app_store(
+      bundle_id:           "com.kndl.Vault23",
+      skip_binary_upload:  true,
+      screenshots_path:    "./fastlane/screenshots",
+      overwrite_screenshots: true,
+      skip_metadata:       true,
+      force:               true  # skip HTML report prompt
+    )
+  end
+
+  # ── All-in-one ───────────────────────────────────────────────────────────────
+  desc "Capture screenshots then upload them to App Store Connect"
+  lane :refresh_screenshots do
+    screenshots
+    upload_screenshots
+  end
+
+end

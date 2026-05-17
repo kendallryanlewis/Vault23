@@ -364,6 +364,11 @@
             <div class="post-sheet__size-icon post-sheet__size-icon--2x1"></div>
             <span>Wide</span>
         </button>
+        <button class="post-sheet__size-btn" [class.post-sheet__size-btn--active]="getGridSizeLabel(pid) === '1x2'"
+            (click)="setPostGridSize('1x2')">
+            <div class="post-sheet__size-icon post-sheet__size-icon--1x2"></div>
+            <span>Long</span>
+        </button>
         <button class="post-sheet__size-btn" [class.post-sheet__size-btn--active]="getGridSizeLabel(pid) === '2x2'"
             (click)="setPostGridSize('2x2')">
             <div class="post-sheet__size-icon post-sheet__size-icon--2x2"></div>

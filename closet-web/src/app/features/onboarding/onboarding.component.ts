@@ -50,6 +50,12 @@ export class OnboardingComponent {
         }
     }
 
+    back(): void {
+        if (this.currentStep() > 0) {
+            this.currentStep.update(s => s - 1);
+        }
+    }
+
     isLastStep(): boolean {
         return this.currentStep() === this.steps.length - 1;
     }

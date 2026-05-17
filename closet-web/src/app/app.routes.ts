@@ -27,6 +27,7 @@ export const routes: Routes = [
             { path: 'profile', loadComponent: () => import('./features/profile/profile.component').then(m => m.ProfileComponent) },
             { path: 'profile/settings', loadComponent: () => import('./features/profile/settings/settings.component').then(m => m.SettingsComponent) },
             { path: 'profile/help', loadComponent: () => import('./features/help/help.component').then(m => m.HelpComponent) },
+            { path: 'profile/privacy-policy', loadComponent: () => import('./features/profile/privacy-policy/privacy-policy.component').then(m => m.PrivacyPolicyComponent) },
             { path: 'profile/followers', loadComponent: () => import('./features/profile/follow-list/follow-list.component').then(m => m.FollowListComponent), data: { type: 'followers' } },
             { path: 'profile/following', loadComponent: () => import('./features/profile/follow-list/follow-list.component').then(m => m.FollowListComponent), data: { type: 'following' } },
             { path: 'wishlist', loadComponent: () => import('./features/wishlist/wishlist.component').then(m => m.WishlistComponent) },
