@@ -24,7 +24,7 @@
 		33032AEE8255D314279997F1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3B4D457A27EAB9911E7E7188 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4E665CBFC3FDAD975620E034 /* ClosetAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosetAppApp.swift; sourceTree = "<group>"; };
-		5BF134BFEFE94AC9C2AE7087 /* ClosetApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClosetApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BF134BFEFE94AC9C2AE7087 /* Vault23.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Vault23.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		734C8910A54475947E78C644 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		754D8304F540F1CB0B9D66CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		996AD6DB9B208A7A7DDB00C4 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 		B478EFF969B01E1826B46C73 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5BF134BFEFE94AC9C2AE7087 /* ClosetApp.app */,
+				5BF134BFEFE94AC9C2AE7087 /* Vault23.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -116,7 +116,7 @@
 				A7701AC6DDC53748A7F5ED88 /* FirebaseStorage */,
 			);
 			productName = ClosetApp;
-			productReference = 5BF134BFEFE94AC9C2AE7087 /* ClosetApp.app */;
+			productReference = 5BF134BFEFE94AC9C2AE7087 /* Vault23.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -236,6 +236,7 @@
 				);
 				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Kendall-lewis.Vault23";
+				PRODUCT_NAME = Vault23;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -257,6 +258,7 @@
 				);
 				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Kendall-lewis.Vault23";
+				PRODUCT_NAME = Vault23;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
