@@ -1,0 +1,60 @@
+@if (sneaker(); as s) {
+<div class="cip-overlay" (click)="close()">
+    <div class="cip-panel" (click)="$event.stopPropagation()">
+
+        <button class="cip-close" (click)="close()" aria-label="Close">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <div class="cip-image-wrap">
+            @if (s.imageUrl) {
+            <img class="cip-image" [src]="s.imageUrl" [alt]="s.name" />
+            } @else {
+            <div class="cip-image-placeholder">
+                <span class="material-symbols-outlined">footprint</span>
+            </div>
+            }
+        </div>
+
+        <div class="cip-info">
+            <p class="cip-brand">{{ s.brand }}</p>
+            <h2 class="cip-name">{{ s.name }}</h2>
+            @if (s.colorway) {
+            <p class="cip-colorway">{{ s.colorway }}</p>
+            }
+            <div class="cip-meta">
+                @if (s.size) {
+                <span class="cip-tag">Size {{ s.size }}</span>
+                }
+                @if (s.condition) {
+                <span class="cip-tag">{{ s.condition }}</span>
+                }
+                @if (s.forSale) {
+                <span class="cip-tag cip-tag--sale">For Sale</span>
+                }
+                @if (s.forTrade) {
+                <span class="cip-tag cip-tag--trade">For Trade</span>
+                }
+            </div>
+            @if (s.purchasePrice) {
+            <p class="cip-price">Paid ${{ s.purchasePrice | number:'1.2-2' }}</p>
+            }
+            @if (s.notes) {
+            <p class="cip-notes">{{ s.notes }}</p>
+            }
+        </div>
+
+        @if (hasPrev() || hasNext()) {
+        <div class="cip-nav">
+            <button class="cip-nav__btn" [disabled]="!hasPrev()" (click)="prev()" aria-label="Previous">
+                <span class="material-symbols-outlined">chevron_left</span>
+            </button>
+            <button class="cip-nav__btn" [disabled]="!hasNext()" (click)="next()" aria-label="Next">
+                <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+        </div>
+        }
+
+    </div>
+</div>
+}

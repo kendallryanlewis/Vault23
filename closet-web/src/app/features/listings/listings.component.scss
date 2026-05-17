@@ -1,0 +1,84 @@
+:host {
+    display: block;
+}
+
+.listing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    padding: 0 16px 24px;
+}
+
+.listing-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+
+    &__img {
+        aspect-ratio: 1;
+        overflow: hidden;
+        background: var(--bg-secondary);
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        &--placeholder {
+            background: var(--bg-secondary);
+            aspect-ratio: 1;
+        }
+    }
+
+    &__body {
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    &__name {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    &__meta {
+        font-size: 11px;
+        color: var(--text-secondary);
+    }
+
+    &__price {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--app-accent);
+    }
+
+    &__user {
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+}
+
+.badge {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 20px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+    width: fit-content;
+
+    &--sell {
+        background: rgba(52, 199, 89, .15);
+        color: #34c759;
+    }
+
+    &--trade {
+        background: rgba(108, 99, 255, .15);
+        color: var(--app-accent);
+    }
+}

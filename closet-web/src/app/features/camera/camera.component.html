@@ -1,0 +1,60 @@
+<div class="camera-page">
+
+    <!-- Hidden gallery input (no capture = photo library) -->
+    <input #galleryInput type="file" accept="image/*" style="display:none" (change)="onGallerySelected($event)" />
+
+    @if (awaitingPick()) {
+    <!-- Landing state: no image yet, prompt user to pick from gallery -->
+    <div class="camera-await">
+        <button class="camera-await__btn" (click)="pickFromGallery()">
+            <span class="material-symbols-outlined">photo_library</span>
+            <span>Choose from Library</span>
+        </button>
+        <button class="camera-await__cancel" (click)="discard()">Cancel</button>
+    </div>
+    }
+
+    @if (capturedDataUrl()) {
+    <div class="post-preview">
+        <div class="post-preview__media-wrap">
+            <img [src]="capturedDataUrl()" alt="Preview" class="post-preview__media" />
+        </div>
+        <div class="post-preview__form">
+            <textarea class="post-preview__caption" placeholder="Write a caption…" [ngModel]="caption()"
+                (ngModelChange)="caption.set($event)" (input)="onCaptionInput($event)" rows="3"
+                maxlength="300"></textarea>
+            @if (mentionResults().length > 0) {
+            <div class="mention-list">
+                @for (user of mentionResults(); track user.uid) {
+                <button class="mention-item" type="button" (mousedown)="selectMention($event, user)"
+                    (touchstart)="selectMention($event, user)">
+                    <div class="mention-item__avatar">
+                        @if (user.photoURL) {
+                        <img [src]="user.photoURL" [alt]="user.username" />
+                        } @else {
+                        <span>{{ (user.username || 'U')[0].toUpperCase() }}</span>
+                        }
+                    </div>
+                    <span class="mention-item__name">&#64;{{ user.username }}</span>
+                </button>
+                }
+            </div>
+            }
+            @if (postError()) { <p class="error-text">{{ postError() }}</p> }
+            <div class="post-preview__actions">
+                <!-- Gallery picker — bottom left -->
+                <button class="btn btn--icon" [disabled]="posting()" (click)="pickFromGallery()"
+                    aria-label="Pick from library" title="Pick from library">
+                    <span class="material-symbols-outlined">photo_library</span>
+                </button>
+                <div class="post-preview__actions-right">
+                    <button class="btn btn--ghost" [disabled]="posting()" (click)="discard()">Discard</button>
+                    <button class="btn btn--primary" [disabled]="posting()" (click)="publish()">
+                        {{ posting() ? 'Posting…' : 'Post' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>

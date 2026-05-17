@@ -1,0 +1,14 @@
+{
+  "images" : [
+    {
+      "filename" : "Vault_23_App_Icon_1024_full_white_background.jpg",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

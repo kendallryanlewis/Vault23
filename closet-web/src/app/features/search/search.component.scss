@@ -1,0 +1,354 @@
+:host {
+    display: block;
+    overflow: hidden;
+    margin-top: calc(-1 * env(safe-area-inset-top));
+
+    // Paint the sidebar background colour into the safe-area / status-bar zone.
+    &::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 75px; // matches --sidebar-w
+        height: env(safe-area-inset-top, 0px);
+        background: var(--surface-sidebar);
+        z-index: 5;
+        pointer-events: none;
+    }
+}
+
+.search-page {
+    display: flex;
+    flex-direction: column;
+    height: calc(100dvh - var(--nav-height) - env(safe-area-inset-bottom));
+    overflow: hidden;
+    background: var(--bg-primary);
+    --sidebar-w: 75px;
+}
+
+.left-bank {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: var(--surface-sidebar);
+    align-self: stretch;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.page-header {
+    flex: 1;
+    padding: calc(env(safe-area-inset-top) + 16px) 1rem 10px;
+    margin-left: -75px;
+    font-size: 20px;
+
+    &__logo {
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        color: var(--text-primary);
+    }
+
+    &__tag {
+        font-weight: 200;
+        color: var(--text-primary);
+        transform: translateX(6px);
+    }
+}
+
+// ── Search bar ────────────────────────────────────────────────────────────────
+.search-bar {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+
+    &__icon {
+        color: var(--text-muted);
+        flex-shrink: 0;
+    }
+
+    &__input {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text-primary);
+        font-size: 16px;
+        font-weight: 500;
+
+        &::placeholder {
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        &::-webkit-search-cancel-button {
+            display: none;
+        }
+    }
+
+    &__clear {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: none;
+        background: var(--bg-secondary);
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+
+        &:active {
+            opacity: 0.6;
+        }
+    }
+}
+
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+.tabs-wrap {
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.tabs {
+    flex: 1;
+    display: flex;
+    gap: 6px;
+    padding: 10px 16px;
+}
+
+// ── Results body ──────────────────────────────────────────────────────────────
+.results-body {
+    min-height: 0;
+}
+
+.results-col {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding-right: 16px;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+// ── Result row ────────────────────────────────────────────────────────────────
+.result-row {
+    cursor: pointer;
+
+    &__text {
+        min-width: 0;
+    }
+
+    &__name {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--text-primary);
+        line-height: 1.35;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    &__meta {
+        font-size: 11px;
+        color: var(--text-muted);
+    }
+
+    &__thumb {
+        width: 72px;
+        height: 72px;
+        border-radius: 5px;
+        object-fit: cover;
+        flex-shrink: 0;
+        background: var(--bg-secondary);
+
+        &--placeholder {
+            width: 72px;
+            height: 72px;
+            border-radius: 10px;
+            background: var(--bg-secondary);
+            flex-shrink: 0;
+        }
+    }
+}
+
+.result-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 0 14px;
+}
+
+.results-section-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin: 12px 14px 4px;
+}
+
+.results-section-divider {
+    margin: 4px 0 0;
+}
+
+// ── User result row ───────────────────────────────────────────────────────────
+.user-row {
+    cursor: pointer;
+
+    &__avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--app-accent);
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        border: 2px solid var(--border);
+        flex-shrink: 0;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__name {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__bio {
+        font-size: 12px;
+        color: var(--text-muted);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__chevron {
+        font-size: 18px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+    }
+}
+
+// ── Empty / loading state ─────────────────────────────────────────────────────
+.empty-state {
+    p {
+        font-size: 14px;
+        color: var(--text-muted);
+        text-align: center;
+    }
+}
+
+.spinner {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border);
+    border-top-color: var(--text-primary);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// ── Brand shortcuts ───────────────────────────────────────────────────────────
+.left-bank--brands {
+    padding: 10px 0;
+    overflow-y: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.brand-btn {
+    width: 48px;
+    padding: 10px;
+    border-radius: 8px;
+    background: transparent;
+    cursor: pointer;
+    transition: background 0.15s;
+
+    &__logo-wrap {
+        display: block;
+        width: 28px;
+        height: 28px;
+    }
+
+    &__logo {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        opacity: 0.5;
+        transition: opacity 0.15s;
+    }
+
+    &--active {
+        background: var(--app-accent);
+    }
+
+    &--active &__logo {
+        opacity: 1;
+    }
+}
+
+// Dark mode: brand logos are dark SVGs/PNGs — invert them so they read as white
+:host-context([data-theme='dark']) .brand-btn__logo {
+    filter: invert(1);
+}
+
+// ── Pagination ────────────────────────────────────────────────────────────────
+.pagination {
+    padding: 14px 16px 20px;
+    border-top: 1px solid var(--border);
+
+    &__btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: transparent;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: background 0.15s;
+
+        &:disabled {
+            color: var(--text-muted);
+            cursor: default;
+        }
+
+        &:not(:disabled):active {
+            background: var(--surface-sidebar);
+        }
+    }
+
+    &__label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text-muted);
+        min-width: 48px;
+        text-align: center;
+    }
+}

@@ -1,0 +1,723 @@
+:host {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: block;
+    background: var(--bg-primary);
+}
+
+// ── Page shell ────────────────────────────────────────────────────────────────
+.settings-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-primary);
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.s-header {
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+
+    &__body {
+        flex: 1;
+        padding: calc(env(safe-area-inset-top) + 14px) 16px 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    &__back {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-bottom: 3px;
+    }
+
+    &__title {
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    &__logo {
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        color: var(--text-primary);
+    }
+
+    &__tag {
+        font-weight: 200;
+        color: var(--text-primary);
+    }
+
+    &__save-btn {
+        margin-left: auto;
+        height: 34px;
+        min-width: 64px;
+        padding: 0 14px;
+        background: var(--app-accent);
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        transition: opacity 0.15s;
+        flex-shrink: 0;
+
+        &:disabled {
+            opacity: 0.5;
+        }
+    }
+
+    &__save-check {
+        font-size: 18px;
+        color: #fff;
+    }
+}
+
+// ── Scroll body ───────────────────────────────────────────────────────────────
+.s-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.s-content {
+    padding: 8px 16px 0;
+}
+
+// ── Section labels ────────────────────────────────────────────────────────────
+.section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--app-accent);
+    padding: 20px 0 6px;
+    margin: 0;
+}
+
+
+
+// ── Avatar ────────────────────────────────────────────────────────────────────
+.avatar-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    cursor: pointer;
+    padding: 12px 0;
+    border-radius: 16px;
+    margin-bottom: 4px;
+}
+
+.avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--app-accent);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2.5px solid var(--app-accent);
+    flex-shrink: 0;
+    color: #fff;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .material-symbols-outlined {
+        font-size: 26px;
+    }
+}
+
+.avatar-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+
+    &__name {
+        font-size: 17px;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: -0.2px;
+    }
+
+    &__hint {
+        font-size: 12px;
+        color: var(--app-accent);
+        font-weight: 500;
+    }
+}
+
+// ── Profile Wallpaper ─────────────────────────────────────────────────────────
+.wallpaper-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 12px 0;
+    border-radius: 16px;
+    margin-bottom: 4px;
+
+    &__preview {
+        width: 80px;
+        height: 52px;
+        border-radius: 10px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: var(--bg-secondary);
+        border: 1.5px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .material-symbols-outlined {
+            font-size: 22px;
+            color: var(--text-muted);
+            opacity: 0.5;
+        }
+
+        &--empty .material-symbols-outlined {
+            opacity: 0.4;
+        }
+    }
+
+    &__uploading {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.45);
+        border-radius: 10px;
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+        flex: 1;
+    }
+
+    &__title {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    &__hint {
+        font-size: 11px;
+        color: var(--text-muted);
+        line-height: 1.4;
+    }
+
+    &__actions {
+        display: flex;
+        gap: 8px;
+        margin-top: 6px;
+    }
+
+    &__upload-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 12px;
+        background: var(--app-accent);
+        color: #fff;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        user-select: none;
+
+        .material-symbols-outlined {
+            font-size: 14px;
+        }
+    }
+
+    &__clear-btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 12px;
+        background: var(--bg-secondary);
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+    }
+}
+
+
+
+// ── Form card ─────────────────────────────────────────────────────────────────
+.form-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+    &--danger {
+        border-color: rgba(239, 68, 68, 0.14);
+        background: rgba(239, 68, 68, 0.03);
+    }
+
+    &__divider {
+        height: 1px;
+        background: var(--border);
+        margin: 0 16px;
+    }
+}
+
+// ── Form field ────────────────────────────────────────────────────────────────
+.form-field {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    min-height: 50px;
+
+    &--textarea {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 6px;
+        padding-bottom: 8px;
+    }
+
+    &--palette {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        padding-bottom: 14px;
+    }
+
+    &__label {
+        font-size: 15px;
+        font-weight: 400;
+        color: var(--text-primary);
+        white-space: nowrap;
+        flex-shrink: 0;
+        min-width: 100px;
+        margin: 0;
+    }
+
+    &__input {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text-secondary);
+        font-size: 15px;
+        font-weight: 400;
+        font-family: inherit;
+        text-align: right;
+        min-width: 0;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+    }
+
+    &__textarea {
+        width: 100%;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text-primary);
+        font-size: 15px;
+        font-family: inherit;
+        resize: none;
+        line-height: 1.5;
+        box-sizing: border-box;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+    }
+
+    &__char-count {
+        font-size: 12px;
+        color: var(--text-muted);
+        align-self: flex-end;
+    }
+}
+
+// ── Mode toggle ───────────────────────────────────────────────────────────────
+.mode-toggle {
+    display: flex;
+    flex: 1;
+    gap: 4px;
+    background: var(--bg-secondary);
+    border-radius: 10px;
+    padding: 3px;
+
+    &__btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        padding: 8px 0;
+        border: none;
+        border-radius: 8px;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background .15s, color .15s, box-shadow .15s;
+
+        &--active {
+            background: var(--app-accent);
+            color: #fff;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.18);
+        }
+    }
+}
+
+// ── Accent color palette ──────────────────────────────────────────────────────
+.color-palette {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 4px 0 2px;
+    width: 100%;
+}
+
+.color-preset {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 2.5px solid transparent;
+    cursor: pointer;
+    transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+
+    &:active {
+        transform: scale(0.88);
+    }
+
+    &--active {
+        border-color: var(--text-primary);
+        transform: scale(1.15);
+        box-shadow: 0 0 0 2px var(--bg-card);
+    }
+}
+
+
+
+// ── Spinner ────────────────────────────────────────────────────────────────────
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+// ── Hidden posts ──────────────────────────────────────────────────────────────
+.hidden-posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.hidden-post-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: space-between;
+
+    &__avatar {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        object-fit: cover;
+        flex-shrink: 0;
+    }
+
+    &__id {
+        font-size: 13px;
+        color: var(--text-primary);
+        flex: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__unhide {
+        padding: 4px 12px;
+        border-radius: 8px;
+        border: 1.5px solid var(--app-accent);
+        background: transparent;
+        color: var(--app-accent);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: inherit;
+        flex-shrink: 0;
+
+        &:active {
+            opacity: 0.6;
+        }
+    }
+}
+
+.form-field__hint {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+// ── Store Brand toggle ────────────────────────────────────────────────────────
+.form-field--row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.toggle-btn {
+    position: relative;
+    width: 48px;
+    height: 28px;
+    border-radius: 14px;
+    background: var(--text-muted, #555);
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+    flex-shrink: 0;
+
+    &--on {
+        background: var(--accent, #F97316);
+    }
+
+    &__knob {
+        position: absolute;
+        top: 3px;
+        left: 3px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: #fff;
+        transition: transform 0.2s;
+    }
+
+    &--on &__knob {
+        transform: translateX(20px);
+    }
+}
+
+// ── Nav row (e.g. Help link) ──────────────────────────────────────────────────
+.nav-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 0;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 15px;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+
+    &:active {
+        opacity: .7;
+    }
+
+    &__icon {
+        font-size: 20px;
+        color: var(--text-secondary, rgba(255, 255, 255, .54));
+        flex-shrink: 0;
+    }
+
+    &__label {
+        flex: 1;
+        font-weight: 500;
+    }
+
+    &__chevron {
+        font-size: 20px;
+        color: var(--text-secondary, rgba(255, 255, 255, .4));
+    }
+}
+
+// ── Sign out ──────────────────────────────────────────────────────────────────
+.sign-out-btn {
+    width: 100%;
+    padding: 14px;
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    text-align: center;
+    letter-spacing: 0.1px;
+}
+
+// ── Background preset cycling ──────────────────────────────────────────────────
+.bg-cycle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+
+    &__arrow {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1.5px solid var(--border);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        flex-shrink: 0;
+
+        &:active {
+            opacity: 0.6;
+        }
+    }
+
+    &__preview {
+        flex: 1;
+        height: 64px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: var(--bg-secondary);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        position: relative;
+
+        img {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    }
+
+    &__none-icon {
+        font-size: 22px;
+        color: var(--text-muted);
+    }
+
+    &__name {
+        font-size: 10px;
+        font-weight: 700;
+        color: #fff;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        z-index: 1;
+        background: rgba(0, 0, 0, 0.45);
+        padding: 2px 7px;
+        border-radius: 4px;
+    }
+}
+
+// ── Sticky save bar ────────────────────────────────────────────────────────────
+.save-bar {
+    flex-shrink: 0;
+    padding: 10px 16px calc(12px + env(safe-area-inset-bottom));
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+
+    &__btn {
+        width: 100%;
+        padding: 15px;
+        background: var(--app-accent);
+        border: none;
+        border-radius: 14px;
+        color: #fff;
+        font-size: 15px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: opacity 0.15s;
+        letter-spacing: 0.1px;
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: default;
+        }
+    }
+
+    &__feedback {
+        font-size: 13px;
+        font-weight: 500;
+        text-align: center;
+        margin: 0;
+
+        &--success {
+            color: #22c55e;
+        }
+
+        &--error {
+            color: #ef4444;
+        }
+    }
+}

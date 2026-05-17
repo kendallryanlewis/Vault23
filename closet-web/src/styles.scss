@@ -1,0 +1,280 @@
+@use 'bootstrap/scss/bootstrap';
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Eliminate the 300 ms tap delay on every element, not just form controls.
+       'manipulation' still allows scrolling and pinch-zoom; it only disables
+       double-tap-zoom, which is what triggers the delay. */
+    touch-action: manipulation;
+    /* Suppress the native tap flash that WKWebView shows on interactive
+       elements — it triggers an extra render pass and makes taps feel sluggish. */
+    -webkit-tap-highlight-color: transparent;
+}
+
+// ── Design tokens — light (default) ───────────────────────────────────────
+:root {
+    // Accent
+    --app-accent: #F97316;
+    --app-accent-muted: rgba(249, 115, 22, 0.15);
+
+    // Surfaces
+    --bg-primary: #f7f7f7;
+    --bg-secondary: #E0E0E0;
+    --bg-card: #FFFFFF;
+    --bg-sheet: #FFFFFF;
+    --bg-nav: rgba(255, 255, 255, 0.88);
+
+    // Borders
+    --border: #aaaaae;
+    --border-reverse: #555558;
+    --border-input: #C7C7CC;
+
+    --surface-sidebar: #FFFFFF;
+
+    // Text
+    --text-primary: #0A0A0A;
+    --text-secondary: #555558;
+    --text-muted: #aaaaae;
+
+    // Semantic
+    --danger: #EF4444;
+    --success: #22C55E;
+
+    // Layout
+    --nav-height: 100px;
+    --page-padding: 20px;
+    --radius-card: 16px;
+    --radius-sheet: 28px;
+    --keyboard-height: 0px;
+
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+}
+
+// ── Design tokens — dark ────────────────────────────────────────────────────
+[data-theme="dark"] {
+    --bg-primary: #2C2C2E;
+    --bg-secondary: #3A3A3C;
+    --bg-card: #3A3A3C;
+    --bg-sheet: #1C1C1E;
+    --bg-nav: rgba(28, 28, 30, 0.85);
+
+    --border: #515151;
+    --border-reverse: #F5F5F5;
+    --border-input: #3A3A3C;
+
+    --surface-sidebar: #3A3A3C;
+
+    --text-primary: #F5F5F5;
+    --text-secondary: #ABABAB;
+    --text-muted: #636366;
+}
+
+// ── Base ────────────────────────────────────────────────────────────────────
+html,
+body {
+    height: 100%;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    overscroll-behavior: none;
+}
+
+// Full-screen background image — sits behind the entire app
+.has-bg-image body {
+    background-image: var(--app-bg-image);
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+// bg-primary overrides when a background image is active
+html.has-bg-image {
+    --bg-primary: #f7f7f7db;
+}
+
+html.has-bg-image[data-theme="dark"] {
+    --bg-primary: #2c2c2ee8;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+// ── Form elements (feature screens) ────────────────────────────────────────
+// Auth screens override these with underline-only styles locally.
+input,
+textarea,
+select {
+    font-family: inherit;
+    font-size: inherit;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 0px;
+    width: 100%;
+    outline: none;
+    touch-action: manipulation;
+    transition: border-color 0.2s;
+
+    &:focus {
+        border-color: var(--app-accent);
+    }
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+}
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    touch-action: manipulation;
+}
+
+// ── Button system ───────────────────────────────────────────────────────────
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 16px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.1px;
+    transition: opacity 0.15s, transform 0.1s;
+    width: 100%;
+
+    &:active {
+        transform: scale(0.97);
+        opacity: 0.9;
+    }
+
+    &:disabled {
+        opacity: 0.4;
+        pointer-events: none;
+    }
+
+    &--primary {
+        background: var(--app-accent);
+        color: #fff;
+    }
+
+    &--secondary {
+        background: transparent;
+        color: var(--text-primary);
+        border: 1.5px solid var(--border-input);
+    }
+
+    &--ghost {
+        background: transparent;
+        color: var(--app-accent);
+    }
+
+    &--outline {
+        background: transparent;
+        color: var(--text-primary);
+        border: 1.5px solid var(--text-primary);
+    }
+
+    &--danger {
+        background: var(--danger);
+        color: #fff;
+    }
+
+    &--icon {
+        width: auto;
+        padding: 10px;
+        border-radius: 12px;
+        background: var(--bg-secondary);
+        border: 1.5px solid var(--border);
+        color: var(--text-secondary);
+
+        .material-symbols-outlined {
+            font-size: 22px;
+        }
+    }
+}
+
+// ── Page chrome ─────────────────────────────────────────────────────────────
+.page {
+    padding: var(--page-padding);
+    padding-bottom: calc(var(--nav-height) + env(safe-area-inset-bottom) + 16px);
+}
+
+.page-title {
+    font-size: 30px;
+    font-weight: 800;
+    letter-spacing: -0.6px;
+    margin-bottom: 24px;
+}
+
+// ── Section header ──────────────────────────────────────────────────────────
+.section-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    margin-bottom: 14px;
+
+    h2,
+    h3 {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.3px;
+        color: var(--text-primary);
+    }
+
+    a,
+    button {
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--app-accent);
+        background: none;
+        border: none;
+        padding: 0;
+        cursor: pointer;
+    }
+}
+
+// ── Card ────────────────────────────────────────────────────────────────────
+.card {
+    background: var(--bg-card);
+    border-radius: var(--radius-card);
+    overflow: hidden;
+}
+
+// ── Utilities ───────────────────────────────────────────────────────────────
+.error-text {
+    color: var(--danger);
+    font-size: 13px;
+}
+
+.success-text {
+    color: var(--success);
+    font-size: 13px;
+}
+
+.spinner {
+    width: 22px;
+    height: 22px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.65s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

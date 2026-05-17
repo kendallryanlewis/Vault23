@@ -1,0 +1,157 @@
+:host {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: block;
+    background: var(--bg-primary);
+}
+
+.settings-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-primary);
+}
+
+// ── Header (mirrors settings exactly) ────────────────────────────────────────
+.s-header {
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+    border-bottom: 1px solid var(--border);
+
+    &__body {
+        flex: 1;
+        padding: calc(env(safe-area-inset-top) + 14px) 16px 14px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    &__back {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+        color: var(--text-secondary);
+        cursor: pointer;
+        flex-shrink: 0;
+        margin-bottom: 3px;
+    }
+
+    &__title {
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    &__logo {
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        color: var(--text-primary);
+    }
+
+    &__tag {
+        font-weight: 200;
+        color: var(--text-primary);
+    }
+}
+
+// ── Scrollable body (mirrors settings exactly) ───────────────────────────────
+.s-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+.s-content {
+    padding: 8px 16px 0;
+}
+
+// ── Section labels ────────────────────────────────────────────────────────────
+.section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .8px;
+    text-transform: uppercase;
+    color: var(--app-accent);
+    padding: 20px 0 6px;
+    margin: 0;
+}
+
+.help-intro {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 8px 0 4px;
+    line-height: 1.5;
+}
+
+// ── Accordion items ───────────────────────────────────────────────────────────
+.h-item {
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+
+    &:active {
+        opacity: .7;
+    }
+
+    &__row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 14px 0;
+    }
+
+    &__icon {
+        font-size: 20px;
+        color: var(--text-secondary);
+        flex-shrink: 0;
+    }
+
+    &__title {
+        flex: 1;
+        font-size: 15px;
+        font-weight: 500;
+        color: var(--text-primary);
+    }
+
+    &__chevron {
+        font-size: 20px;
+        color: var(--text-secondary);
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
+
+        &--open {
+            transform: rotate(180deg);
+        }
+    }
+
+    &__body {
+        font-size: 13px;
+        line-height: 1.65;
+        color: var(--text-secondary);
+        margin: 0 0 16px;
+        padding-left: 32px;
+
+        strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        em {
+            font-style: italic;
+            color: var(--text-primary);
+        }
+    }
+}

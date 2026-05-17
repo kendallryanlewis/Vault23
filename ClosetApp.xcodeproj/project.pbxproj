@@ -1,0 +1,434 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		04797E4B2087E781A84B83C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 33032AEE8255D314279997F1 /* GoogleService-Info.plist */; };
+		0757D48D49CF43721EBF2BC7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3BF62A648B5F91025385A920 /* FirebaseFirestore */; };
+		373133250AECC5B7FA11A19A /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A7701AC6DDC53748A7F5ED88 /* FirebaseStorage */; };
+		401765F1ECEF2D2937B1634E /* WebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC72A4F75AA3AB6C9D31FAB9 /* WebBridge.swift */; };
+		76EAFA121612C1A224F3ACBF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B4D457A27EAB9911E7E7188 /* ContentView.swift */; };
+		A3100F49383AC528BFD75BB8 /* ClosetAppApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E665CBFC3FDAD975620E034 /* ClosetAppApp.swift */; };
+		AA00BBCC11DD22EE33FF4455 /* BundleSchemeHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB00AABB11CC22DD33EE44FF /* BundleSchemeHandler.swift */; };
+		ADF96CEE120A8E14E9671C1B /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C21941386384AE6656050B6 /* WebView.swift */; };
+		DE3673039A14C4D82378556A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 754D8304F540F1CB0B9D66CD /* Assets.xcassets */; };
+		E40468A740D5E882688C5CB3 /* FirebaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 996AD6DB9B208A7A7DDB00C4 /* FirebaseService.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0C21941386384AE6656050B6 /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		33032AEE8255D314279997F1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3B4D457A27EAB9911E7E7188 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4E665CBFC3FDAD975620E034 /* ClosetAppApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosetAppApp.swift; sourceTree = "<group>"; };
+		5BF134BFEFE94AC9C2AE7087 /* ClosetApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClosetApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		734C8910A54475947E78C644 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		754D8304F540F1CB0B9D66CD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		996AD6DB9B208A7A7DDB00C4 /* FirebaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseService.swift; sourceTree = "<group>"; };
+		BB00AABB11CC22DD33EE44FF /* BundleSchemeHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleSchemeHandler.swift; sourceTree = "<group>"; };
+		CC72A4F75AA3AB6C9D31FAB9 /* WebBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebBridge.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		6963B4DD4E4472F44FB903C9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0757D48D49CF43721EBF2BC7 /* FirebaseFirestore in Frameworks */,
+				373133250AECC5B7FA11A19A /* FirebaseStorage in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		26C2097A80F56187E2138D46 /* Firebase */ = {
+			isa = PBXGroup;
+			children = (
+				996AD6DB9B208A7A7DDB00C4 /* FirebaseService.swift */,
+			);
+			path = Firebase;
+			sourceTree = "<group>";
+		};
+		73438F93D2FEC08D0FF5FE9E /* WebView */ = {
+			isa = PBXGroup;
+			children = (
+				BB00AABB11CC22DD33EE44FF /* BundleSchemeHandler.swift */,
+				CC72A4F75AA3AB6C9D31FAB9 /* WebBridge.swift */,
+				0C21941386384AE6656050B6 /* WebView.swift */,
+			);
+			path = WebView;
+			sourceTree = "<group>";
+		};
+		8DD4080E6063266A26CB5CE6 = {
+			isa = PBXGroup;
+			children = (
+				D4651A081FA5FE3164D142DC /* ClosetApp */,
+				B478EFF969B01E1826B46C73 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B478EFF969B01E1826B46C73 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5BF134BFEFE94AC9C2AE7087 /* ClosetApp.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D4651A081FA5FE3164D142DC /* ClosetApp */ = {
+			isa = PBXGroup;
+			children = (
+				754D8304F540F1CB0B9D66CD /* Assets.xcassets */,
+				4E665CBFC3FDAD975620E034 /* ClosetAppApp.swift */,
+				3B4D457A27EAB9911E7E7188 /* ContentView.swift */,
+				33032AEE8255D314279997F1 /* GoogleService-Info.plist */,
+				734C8910A54475947E78C644 /* Info.plist */,
+				26C2097A80F56187E2138D46 /* Firebase */,
+				73438F93D2FEC08D0FF5FE9E /* WebView */,
+			);
+			path = ClosetApp;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		514F3F2C0AE88CA10CFBD8AC /* ClosetApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CEE1CDF62838CDEFB2AD6DC1 /* Build configuration list for PBXNativeTarget "ClosetApp" */;
+			buildPhases = (
+				2511B3F47B25ED2EF1CB4376 /* [Angular] Build web app */,
+				D308FF73C7A575CD1E4313E6 /* Sources */,
+				D8239409B0BB25B1E0E7F32A /* [Angular] Copy dist into app bundle */,
+				3D124AA38FE52F35FAF89764 /* Resources */,
+				6963B4DD4E4472F44FB903C9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ClosetApp;
+			packageProductDependencies = (
+				3BF62A648B5F91025385A920 /* FirebaseFirestore */,
+				A7701AC6DDC53748A7F5ED88 /* FirebaseStorage */,
+			);
+			productName = ClosetApp;
+			productReference = 5BF134BFEFE94AC9C2AE7087 /* ClosetApp.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		35FAA58CC6386D719681F0E3 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1630;
+			};
+			buildConfigurationList = 4A96AC41B5C0C3C1D27FE688 /* Build configuration list for PBXProject "ClosetApp" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 8DD4080E6063266A26CB5CE6;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6703F96C299A3C3BE59C0663 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = B478EFF969B01E1826B46C73 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				514F3F2C0AE88CA10CFBD8AC /* ClosetApp */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3D124AA38FE52F35FAF89764 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DE3673039A14C4D82378556A /* Assets.xcassets in Resources */,
+				04797E4B2087E781A84B83C4 /* GoogleService-Info.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		2511B3F47B25ED2EF1CB4376 /* [Angular] Build web app */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Angular] Build web app";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"/opt/homebrew/bin:/usr/local/bin:$PATH\"\ncd \"${SRCROOT}/closet-web\"\nif [ \"${CONFIGURATION}\" = \"Release\" ]; then\n  npm run build -- --base-href /\nelse\n  npx ng build --configuration development --base-href /\nfi\n";
+		};
+		D8239409B0BB25B1E0E7F32A /* [Angular] Copy dist into app bundle */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "[Angular] Copy dist into app bundle";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "DIST=\"${SRCROOT}/closet-web/dist/closet-web/browser\"\nDEST=\"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/www\"\nmkdir -p \"${DEST}\"\nrsync -a --delete \"${DIST}/\" \"${DEST}/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		D308FF73C7A575CD1E4313E6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3100F49383AC528BFD75BB8 /* ClosetAppApp.swift in Sources */,
+				AA00BBCC11DD22EE33FF4455 /* BundleSchemeHandler.swift in Sources */,
+				76EAFA121612C1A224F3ACBF /* ContentView.swift in Sources */,
+				E40468A740D5E882688C5CB3 /* FirebaseService.swift in Sources */,
+				401765F1ECEF2D2937B1634E /* WebBridge.swift in Sources */,
+				ADF96CEE120A8E14E9671C1B /* WebView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		2392F0FBEECC6C7DD25240A0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PPLU8J5RDW;
+				INFOPLIST_FILE = ClosetApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Vault 23";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Kendall-lewis.Drip-Drops";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		99AEF7464AD57B794BF6413B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = PPLU8J5RDW;
+				INFOPLIST_FILE = ClosetApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Vault 23";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.lifestyle";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "Kendall-lewis.Drip-Drops";
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		BA3ACC41F14BF8955C37C08B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Release;
+		};
+		CCE264D8378F9D6A92A12AB1 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 6.0;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		4A96AC41B5C0C3C1D27FE688 /* Build configuration list for PBXProject "ClosetApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CCE264D8378F9D6A92A12AB1 /* Debug */,
+				BA3ACC41F14BF8955C37C08B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		CEE1CDF62838CDEFB2AD6DC1 /* Build configuration list for PBXNativeTarget "ClosetApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2392F0FBEECC6C7DD25240A0 /* Debug */,
+				99AEF7464AD57B794BF6413B /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6703F96C299A3C3BE59C0663 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3BF62A648B5F91025385A920 /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6703F96C299A3C3BE59C0663 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		A7701AC6DDC53748A7F5ED88 /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6703F96C299A3C3BE59C0663 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 35FAA58CC6386D719681F0E3 /* Project object */;
+}

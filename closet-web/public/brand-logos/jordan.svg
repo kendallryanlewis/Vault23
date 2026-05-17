@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120" fill="currentColor">
+  <!-- Jumpman silhouette -->
+  <ellipse cx="65" cy="14" rx="10" ry="10"/>
+  <path d="M55 24 c-4 4-8 6-14 4 l-18-6 c-2-0.6-3 1-2 3 l6 10 c1 2 4 3 6 2 l8-2 l-10 20 l-16 0 c-3 0-5 2-5 5 l0 2 c0 3 2 5 5 5 l24 0 c3 0 5-2 6-4 l8-18 l4 8 l-6 12 c-1 2 0 5 3 6 l2 1 c2 1 5-0 6-3 l10-20 c2-4 0-8-4-10 l-12-8 l4-8 c6 4 12 5 18 4 c2-0 3-2 2-4 l-2-8 c-0.5-2-3-3-5-2 l-8 2 c-2 1-4 0-5-1 l-6-6 z"/>
+</svg>

@@ -1,0 +1,147 @@
+<div class="pv-host">
+
+    <!-- Snap scroll container -->
+    <div class="pv-container" #snapContainer>
+        @for (post of posts(); track post.id; let i = $index) {
+        <div class="pv-slide">
+
+            <!-- Full bleed image (80% height) -->
+            <div class="pv-image-wrap">
+                @if (post.imageUrl) {
+                <img class="pv-image" [src]="post.imageUrl" [alt]="post.caption" />
+                } @else {
+                <div class="pv-image-placeholder">
+                    <span class="material-symbols-outlined">image</span>
+                </div>
+                }
+
+                <!-- Author overlay on image -->
+                <div class="pv-author-overlay">
+                    <div class="pv-author-avatar">
+                        @if (author().photoURL) {
+                        <img [src]="author().photoURL" [alt]="author().username" />
+                        } @else {
+                        <span>{{ (author().username || 'U')[0].toUpperCase() }}</span>
+                        }
+                    </div>
+                    <span class="pv-author-name">{{ author().username }}</span>
+                </div>
+            </div>
+
+            <!-- Info + comments strip -->
+            <div class="pv-strip">
+
+                <!-- Likes / caption / time / delete -->
+                <div class="pv-meta">
+                    @if (likedByLabel(post)) {
+                    <p class="pv-liked-by">{{ likedByLabel(post) }}</p>
+                    }
+                    @if (post.caption) {
+                    <p class="pv-caption"><strong>{{ author().username }}</strong> {{ post.caption }}</p>
+                    }
+                    <div class="pv-meta__row">
+                        <span class="pv-posted-time">{{ timeAgo(post.createdAt) }}</span>
+                        @if (canDelete() && i === activeIndex()) {
+                        <button class="pv-delete-btn" (click)="openDeleteConfirm()">
+                            <span class="material-symbols-outlined">delete_outline</span>
+                        </button>
+                        }
+                    </div>
+                </div>
+
+                <!-- Scrollable comments list -->
+                <div class="pv-comments-list">
+                    @if (i === activeIndex()) {
+                    @if (threadedComments().length === 0) {
+                    <p class="pv-comments-empty">No comments yet. Be the first!</p>
+                    }
+                    @for (thread of threadedComments(); track thread.comment.id) {
+                    <div class="pv-comment">
+                        <div class="pv-comment__avatar">
+                            @if (thread.comment.authorPhotoURL) {
+                            <img [src]="thread.comment.authorPhotoURL" [alt]="thread.comment.authorName" />
+                            } @else {
+                            <span>{{ (thread.comment.authorName || 'U')[0].toUpperCase() }}</span>
+                            }
+                        </div>
+                        <div class="pv-comment__body">
+                            <p class="pv-comment__text"><strong>{{ thread.comment.authorName }}</strong> {{
+                                thread.comment.text }}</p>
+                            <div class="pv-comment__footer">
+                                <span class="pv-comment__time">{{ timeAgo(thread.comment.createdAt) }}</span>
+                                <button class="pv-comment__reply-btn"
+                                    (click)="setReplyTo(thread.comment)">Reply</button>
+                            </div>
+                        </div>
+                    </div>
+                    @for (reply of thread.replies; track reply.id) {
+                    <div class="pv-comment pv-comment--reply">
+                        <div class="pv-comment__avatar pv-comment__avatar--sm">
+                            @if (reply.authorPhotoURL) {
+                            <img [src]="reply.authorPhotoURL" [alt]="reply.authorName" />
+                            } @else {
+                            <span>{{ (reply.authorName || 'U')[0].toUpperCase() }}</span>
+                            }
+                        </div>
+                        <div class="pv-comment__body">
+                            <p class="pv-comment__text"><strong>{{ reply.authorName }}</strong> {{ reply.text }}</p>
+                            <div class="pv-comment__footer">
+                                <span class="pv-comment__time">{{ timeAgo(reply.createdAt) }}</span>
+                                <button class="pv-comment__reply-btn"
+                                    (click)="setReplyTo(thread.comment)">Reply</button>
+                            </div>
+                        </div>
+                    </div>
+                    }
+                    }
+                    }
+                </div>
+
+                <!-- Replying-to label -->
+                @if (replyingTo()) {
+                <div class="pv-reply-label">
+                    <span>Replying to &#64;{{ replyingTo()!.authorName }}</span>
+                    <button class="pv-reply-label__clear" (click)="clearReply()">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                }
+
+                <!-- Input bar -->
+                <div class="pv-input-bar">
+                    <input class="pv-input-bar__field" [(ngModel)]="commentText"
+                        [placeholder]="replyingTo() ? 'Add a reply…' : 'Add a comment…'"
+                        (keydown.enter)="submitComment()" />
+                    <button class="pv-input-bar__send" [disabled]="!commentText().trim() || commentLoading()"
+                        (click)="submitComment()">
+                        <span class="material-symbols-outlined">send</span>
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+        }
+    </div>
+
+    <!-- Close button -->
+    <button class="pv-close" (click)="close()" aria-label="Close">
+        <span class="material-symbols-outlined">close</span>
+    </button>
+
+    <!-- Delete confirmation sheet -->
+    @if (deleteConfirmOpen()) {
+    <div class="pv-confirm-backdrop" (click)="cancelDelete()"></div>
+    <div class="pv-confirm-sheet">
+        <p class="pv-confirm-title">Delete post?</p>
+        <p class="pv-confirm-body">This cannot be undone.</p>
+        <div class="pv-confirm-actions">
+            <button class="pv-confirm-btn pv-confirm-btn--cancel" (click)="cancelDelete()">Cancel</button>
+            <button class="pv-confirm-btn pv-confirm-btn--delete" (click)="confirmDelete()" [disabled]="deleting()">
+                {{ deleting() ? 'Deleting…' : 'Delete' }}
+            </button>
+        </div>
+    </div>
+    }
+
+</div>

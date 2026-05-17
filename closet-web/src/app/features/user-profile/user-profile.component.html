@@ -1,0 +1,333 @@
+@if (loading()) {
+<div class="up-loading">
+    <span class="up-spinner"></span>
+</div>
+} @else if (profile(); as p) {
+
+<div class="user-profile">
+
+    <!-- Collapsing cover: sticky, shrinks as user scrolls -->
+    <div class="up-cover">
+        @if (p.backgroundImageUrl || p.photoURL) {
+        <img class="up-cover__bg" [src]="p.backgroundImageUrl || p.photoURL" aria-hidden="true" />
+        }
+        <div class="up-cover__overlay"></div>
+
+        <!-- Button row — stays at top of cover as it collapses -->
+        <div class="up-cover__btn-row">
+            <button class="up-btn" (click)="goBack()" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <button class="up-btn" aria-label="Share">
+                <span class="material-symbols-outlined">ios_share</span>
+            </button>
+        </div>
+
+        <!-- Identity + stats — pinned to cover bottom, fades out as cover collapses -->
+        <div class="up-cover__content">
+            <div class="up-cover__inner">
+                <div class="up-cover__id-block">
+                    <div class="up-avatar m-auto">
+                        @if (p.photoURL) {
+                        <img [src]="p.photoURL" [alt]="p.username" />
+                        } @else {
+                        <span>{{ (p.username || 'U')[0].toUpperCase() }}</span>
+                        }
+                    </div>
+                    <h2 class="up-name fw-light">{{ p.username }}</h2>
+                    @if (p.location) {
+                    <p class="text-white fw-lighter">{{ p.location }}</p>
+                    }
+                </div>
+                @if (!isOwnProfile()) {
+                <div class="up-cover__actions pb-5">
+                    <button class="up-cover__cta-btn up-cover__cta-btn--primary"
+                        [class.up-cover__cta-btn--active]="following()" [disabled]="followLoading()"
+                        (click)="toggleFollow()">
+                        @if (followLoading()) {
+                        <span class="up-cover__cta-spinner"></span>
+                        } @else if (following()) {
+                        <span class="material-symbols-outlined">how_to_reg</span>Following
+                        } @else {
+                        <span class="material-symbols-outlined">person_add</span>Follow
+                        }
+                    </button>
+                    <button class="up-cover__cta-btn" (click)="openDM()">
+                        <span class="material-symbols-outlined">chat_bubble</span>Message
+                    </button>
+                    <button class="up-cover__cta-btn" [class.up-cover__cta-btn--active]="isInHomeGrid()"
+                        (click)="toggleSaveToHomeGrid()"
+                        [attr.aria-label]="isInHomeGrid() ? 'Remove from Home' : 'Save to Home'">
+                        <span class="material-symbols-outlined">{{ isInHomeGrid() ? 'home' : 'add_home' }}</span>
+                    </button>
+                </div>
+                @if (followError()) {
+                <p class="up-follow-error">{{ followError() }}</p>
+                }
+                }
+                <div class="up-cover__stats">
+                    <div class="up-cover-stat">
+                        <span class="material-symbols-outlined">footprint</span>
+                        <span class="up-cover-stat__label">Closet</span>
+                        <span class="up-cover-stat__value">{{ closet().length }}</span>
+                    </div>
+                    <div class="up-cover-stat">
+                        <span class="material-symbols-outlined">post</span>
+                        <span class="up-cover-stat__label">Posts</span>
+                        <span class="up-cover-stat__value">{{ postCount() }}</span>
+                    </div>
+                    <div class="up-cover-stat">
+                        <span class="material-symbols-outlined">people</span>
+                        <span class="up-cover-stat__label">Followers</span>
+                        <span class="up-cover-stat__value">{{ followerCount() }}</span>
+                    </div>
+                    <div class="up-cover-stat">
+                        <span class="material-symbols-outlined">person_add</span>
+                        <span class="up-cover-stat__label">Following</span>
+                        <span class="up-cover-stat__value">{{ followingCount() }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spacer ensures body stays below the cover as it shrinks -->
+    <div class="up-cover-spacer" aria-hidden="true"></div>
+
+    <!-- ── Store Brand layout ── -->
+    @if (p.isStoreBrand) {
+
+    <!-- Store badge -->
+    <div class="up-store-badge">
+        <span class="material-symbols-outlined">storefront</span>
+        Store
+    </div>
+
+    <!-- Tab bar -->
+    <div class="up-store-tabs">
+        <button class="up-store-tab" [class.up-store-tab--active]="profileTab() === 'shop'"
+            (click)="profileTab.set('shop')">Shop</button>
+        <button class="up-store-tab" [class.up-store-tab--active]="profileTab() === 'posts'"
+            (click)="profileTab.set('posts')">Posts</button>
+        <button class="up-store-tab" [class.up-store-tab--active]="profileTab() === 'closet'"
+            (click)="profileTab.set('closet')">Closet</button>
+        <button class="up-store-tab" [class.up-store-tab--active]="profileTab() === 'about'"
+            (click)="profileTab.set('about')">About</button>
+    </div>
+
+    <div class="up-body p-4">
+        @switch (profileTab()) {
+
+        @case ('shop') {
+        @if (listings().length === 0) {
+        <div class="up-posts-empty">
+            <p>No listings yet.</p>
+        </div>
+        } @else {
+        <div class="up-listing-grid">
+            @for (l of listings(); track l.id) {
+            <div class="up-listing-card">
+                @if (l.imageUrl) {
+                <img class="up-listing-card__img" [src]="l.imageUrl" [alt]="l.sneakerName" loading="lazy" />
+                }
+                <div class="up-listing-card__body">
+                    <p class="up-listing-card__name">{{ l.sneakerName }}</p>
+                    <p class="up-listing-card__meta">Size {{ l.size }} · {{ l.condition }}</p>
+                    <p class="up-listing-card__price">${{ l.askingPrice }}</p>
+                    @if (!isOwnProfile()) {
+                    <button class="up-listing-card__dm-btn" (click)="openDM()">Message to Buy</button>
+                    }
+                </div>
+            </div>
+            }
+        </div>
+        }
+        }
+
+        @case ('posts') {
+        @if (posts().length > 0) {
+        <div class="up-grid">
+            @for (post of posts(); track post.id; let i = $index) {
+            <div class="up-grid__cell" [style.grid-column]="'span ' + getColSpan(post.id)"
+                [style.grid-row]="'span ' + getRowSpan(post.id)" (click)="openPost(i)">
+                @if (post.imageUrl) {
+                <img [src]="post.imageUrl" [alt]="post.caption" loading="lazy" />
+                } @else {
+                <div class="up-grid__placeholder"></div>
+                }
+            </div>
+            }
+        </div>
+        } @else {
+        <div class="up-posts-empty">
+            <p>No posts yet.</p>
+        </div>
+        }
+        }
+
+        @case ('closet') {
+        @if (closetPreview().length > 0) {
+        <div class="up-grid">
+            @for (s of closetPreview(); track s.id; let i = $index) {
+            <div class="up-grid__cell p-2" [style.grid-column]="'span ' + getColSpan(s.id)"
+                [style.grid-row]="'span ' + getRowSpan(s.id)" (click)="openSneaker(i)">
+                @if (s.imageUrl) {
+                <img [src]="s.imageUrl" [alt]="s.name" loading="lazy" />
+                } @else {
+                <div class="up-grid__placeholder"></div>
+                }
+            </div>
+            }
+        </div>
+        } @else {
+        <div class="up-posts-empty">
+            <p>No sneakers yet.</p>
+        </div>
+        }
+        }
+
+        @case ('about') {
+        @if (p.bio) {
+        <p class="up-bio">{{ p.bio }}</p>
+        }
+        @if (p.storeDescription) {
+        <div class="up-section">
+            <p class="up-section__title">About the Store</p>
+            <p class="up-bio">{{ p.storeDescription }}</p>
+        </div>
+        }
+        @if (p.storePolicies) {
+        <div class="up-section">
+            <p class="up-section__title">Store Policies</p>
+            <p class="up-bio" style="white-space: pre-wrap">{{ p.storePolicies }}</p>
+        </div>
+        }
+        @if (p.location) {
+        <div class="up-section">
+            <p class="up-section__title">Location</p>
+            <div class="up-map-pin-row">
+                <span class="material-symbols-outlined up-map-pin-icon">location_on</span>
+                <p class="up-bio">{{ p.location }}</p>
+            </div>
+            @if (locationMapUrl()) {
+            <div class="up-map-wrap">
+                <iframe class="up-map-iframe" [src]="locationMapUrl()!" loading="lazy" referrerpolicy="no-referrer"
+                    allowfullscreen title="Store location map">
+                </iframe>
+            </div>
+            }
+        </div>
+        }
+        }
+
+        }
+    </div>
+
+    } @else {
+
+    <!-- ── Standard profile layout ── -->
+    <div class="up-body p-4">
+
+        <!-- Bio / About -->
+        <div class="up-section">
+            <p class="up-section__title">About</p>
+            @if (p.bio) {
+            <p class="up-bio">{{ p.bio }}</p>
+            } @else {
+            <p class="up-bio">No bio has been added.</p>
+            }
+        </div>
+
+        <!-- Friends -->
+        @if (friends().length > 0) {
+        <div class="up-section">
+            <p class="up-section__title">Friends</p>
+            <div class="up-friends-strip">
+                @for (f of friends(); track f.uid) {
+                <div class="up-friend-chip">
+                    <div class="up-friend-chip__avatar">
+                        @if (f.photoURL) {
+                        <img [src]="f.photoURL" [alt]="f.username" />
+                        } @else {
+                        <span>{{ (f.username || 'U')[0].toUpperCase() }}</span>
+                        }
+                    </div>
+                    <span class="up-friend-chip__name">{{ f.username }}</span>
+                </div>
+                }
+            </div>
+        </div>
+        }
+
+        <!-- Closet -->
+        @if (closetPreview().length > 0) {
+        <div class="up-section">
+            <div class="up-section__header">
+                <p class="up-section__title">Closet</p>
+                @if (closet().length > 9) {
+                <button class="up-see-all-btn">See all {{ closet().length }}</button>
+                }
+            </div>
+            <div class="up-grid">
+                @for (s of closetPreview(); track s.id; let i = $index) {
+                <div class="up-grid__cell p-2" [style.grid-column]="'span ' + getColSpan(s.id)"
+                    [style.grid-row]="'span ' + getRowSpan(s.id)" (click)="openSneaker(i)">
+                    @if (s.imageUrl) {
+                    <img [src]="s.imageUrl" [alt]="s.name" loading="lazy" />
+                    } @else {
+                    <div class="up-grid__placeholder"></div>
+                    }
+                </div>
+                }
+            </div>
+        </div>
+        }
+
+        <!-- Posts -->
+        <div class="up-section">
+            <p class="up-section__title">Posts</p>
+            @if (posts().length > 0) {
+            <div class="up-grid">
+                @for (post of posts(); track post.id; let i = $index) {
+                <div class="up-grid__cell" [style.grid-column]="'span ' + getColSpan(post.id)"
+                    [style.grid-row]="'span ' + getRowSpan(post.id)" (click)="openPost(i)">
+                    @if (post.imageUrl) {
+                    <img [src]="post.imageUrl" [alt]="post.caption" loading="lazy" />
+                    } @else {
+                    <div class="up-grid__placeholder"></div>
+                    }
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="up-posts-empty">
+                <p>No posts yet.</p>
+            </div>
+            }
+        </div>
+
+    </div>
+
+    } <!-- end @else (standard layout) -->
+
+</div>
+
+<!-- Closet item panel overlay -->
+@if (selectedSneakerItem() !== null) {
+<app-detail-panel [item]="selectedSneakerItem()" [selectedIndex]="selectedSneakerIndex()!"
+    [catalogResultsLength]="closet().length" [slideAnimating]="slideAnimating()" [carouselDir]="carouselDir()"
+    (closed)="closeSneaker()" (navigatedNext)="navigateNextSneaker()" (navigatedPrev)="navigatePrevSneaker()">
+</app-detail-panel>
+}
+
+<!-- Post view overlay -->
+@if (selectedPostIndex() !== null && profile()) {
+<app-post-view [posts]="posts()" [startIndex]="selectedPostIndex()!" [author]="profile()!" (closed)="closePost()"
+    (postDeleted)="closePost()" />
+}
+
+} @else {
+<div class="up-loading">
+    <p>User not found.</p>
+</div>
+}

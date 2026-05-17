@@ -1,0 +1,12 @@
+{
+    "hooks": {
+        "UserPromptSubmit": [
+            {
+                "type": "command",
+                "command": "bash scripts/analyze-codebase.sh",
+                "cwd": "${workspaceFolder}",
+                "timeout": 10
+            }
+        ]
+    }
+}

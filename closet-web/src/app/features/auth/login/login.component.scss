@@ -1,0 +1,171 @@
+// Auth screens use app theme variables so they honour the user's chosen theme.
+.auth-screen {
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    background-image: url('/assets/backgrounds/Background_1.png');
+    background-size: cover;
+    background-position: center top;
+
+    // Dark overlay for legibility
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.55);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    // All direct children stack above the overlay
+    >* {
+        position: relative;
+        z-index: 1;
+    }
+
+    // ── Hero ──────────────────────────────────────────────────────────────
+    &__hero {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: calc(env(safe-area-inset-top, 0px) + 48px) 32px 32px;
+    }
+
+    &__brand {
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 3px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        margin-bottom: 10px;
+    }
+
+    &__headline {
+        font-size: 52px;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        line-height: 1.0;
+        color: #fff;
+        text-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+    }
+
+    // ── Form content (replaces sheet) ────────────────────────────────────
+    &__content {
+        padding: 24px 32px max(env(safe-area-inset-bottom, 0px), 40px);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    &__cta {
+        margin-top: 4px;
+    }
+
+    &__error {
+        color: #FCA5A5;
+        font-size: 13px;
+        margin-top: -8px;
+    }
+
+    &__divider {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: rgba(255, 255, 255, 0.45);
+        font-size: 13px;
+
+        &::before,
+        &::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    &__footer {
+        text-align: center;
+        color: rgba(255, 255, 255, 0.55);
+        font-size: 14px;
+        padding-top: 4px;
+
+        a {
+            color: var(--app-accent);
+            font-weight: 600;
+        }
+    }
+}
+
+// ── Frosted-glass fields (auth-only) ────────────────────────────────────────
+.auth-fields {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-field {
+    display: flex;
+    flex-direction: column;
+
+    &__row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 6px;
+    }
+
+    &__label {
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.75);
+        margin-bottom: 6px;
+    }
+
+    &__input {
+        background: rgba(255, 255, 255, 0.14) !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.28) !important;
+        border-radius: 12px !important;
+        padding: 14px 16px !important;
+        color: #fff !important;
+        font-size: 16px !important;
+        font-weight: 400;
+        width: 100%;
+        outline: none;
+        transition: border-color 0.2s, background 0.2s;
+
+        &::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        &:focus {
+            background: rgba(255, 255, 255, 0.2) !important;
+            border-color: var(--app-accent) !important;
+        }
+    }
+
+    &__link {
+        font-size: 13px;
+        color: var(--app-accent);
+        font-weight: 600;
+    }
+}
+
+// Secondary buttons adapted for dark overlay
+.auth-screen .btn--secondary {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.auth-screen__sent {
+    color: #22C55E;
+    font-size: 15px;
+    line-height: 1.5;
+    padding: 8px 0;
+}

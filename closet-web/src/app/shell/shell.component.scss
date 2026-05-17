@@ -1,0 +1,139 @@
+.shell {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+// When a background image is active, let it show through from <body>
+:host-context(.has-bg-image) .shell {
+    background: transparent;
+}
+
+.shell__content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-top: env(safe-area-inset-top);
+    // Space for the floating nav + home indicator; collapses to keyboard height when keyboard is open
+    padding-bottom: calc(max(var(--nav-height) + env(safe-area-inset-bottom), var(--keyboard-height)));
+}
+
+// ── Full-width transparent nav ────────────────────────────────────────────────
+.tab-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background: var(--bg-primary);
+    transition: transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
+
+    &--hidden {
+        transform: translateY(100%);
+    }
+
+    display: flex;
+    align-items: center;
+    padding-bottom: env(safe-area-inset-bottom);
+}
+
+.tab-bar__item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: var(--nav-height);
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+
+    svg {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+    }
+
+    &--active {
+        color: var(--app-accent);
+    }
+
+    &--scan svg {
+        width: 26px;
+        height: 26px;
+    }
+}
+
+.tab-bar__icon-wrap {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tab-bar__badge {
+    position: absolute;
+    top: -3px;
+    right: -5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--app-accent);
+    border: 2px solid var(--bg-primary);
+}
+
+// ── Post source picker sheet ──────────────────────────────────────────────
+.post-picker__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.post-picker__sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 501;
+    background: var(--bg-secondary, #1c1c1e);
+    border-radius: 20px 20px 0 0;
+    padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 24px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.post-picker__handle {
+    width: 36px;
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 auto 12px;
+}
+
+.post-picker__btn {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 16px 18px;
+    border-radius: 14px;
+    border: none;
+    background: var(--bg-tertiary, rgba(255, 255, 255, 0.06));
+    color: var(--text-primary);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: left;
+
+    .material-symbols-outlined {
+        font-size: 22px;
+        color: var(--app-accent);
+    }
+
+    &:active {
+        opacity: 0.7;
+    }
+}

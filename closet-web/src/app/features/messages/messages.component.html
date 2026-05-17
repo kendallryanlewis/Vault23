@@ -1,0 +1,166 @@
+<div class="messages-page">
+
+    <!-- Header -->
+    <header class="messages-header">
+        <div class="messages-header__title">
+            <span class="messages-header__logo">VAULT.</span>
+            <span class="messages-header__tag">MESSAGES</span>
+        </div>
+        <button class="messages-header__compose" (click)="showCompose.set(true)" aria-label="New message">
+            <span class="material-symbols-outlined">edit_square</span>
+        </button>
+    </header>
+
+    <!-- Filter pills -->
+    <div class="messages-filters">
+        <button class="messages-filters__pill" [class.messages-filters__pill--active]="filter() === 'all'"
+            (click)="filter.set('all')">All</button>
+        <button class="messages-filters__pill" [class.messages-filters__pill--active]="filter() === 'unread'"
+            (click)="filter.set('unread')">Unread</button>
+    </div>
+
+    <!-- Conversation list -->
+    <div class="messages-list">
+        @if (filteredChats().length === 0) {
+        <div class="messages-empty">
+            @if (filter() === 'unread') {
+            <span class="material-symbols-outlined messages-empty__icon">mark_chat_read</span>
+            <p>All caught up</p>
+            } @else {
+            <span class="material-symbols-outlined messages-empty__icon">forum</span>
+            <p>No conversations yet</p>
+            <p class="messages-empty__sub">Tap the pencil button to start one.</p>
+            }
+        </div>
+        }
+        @for (chat of filteredChats(); track chat.id) {
+        <div class="chat-row-wrap" [class.is-swiped]="swipedChatId() === chat.id"
+            (click)="swipedChatId() === chat.id ? dismissSwipe() : null">
+            <div class="chat-row-delete">
+                <button class="chat-row-delete__btn" (click)="deleteConversation(chat)" aria-label="Delete">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </div>
+            <button class="chat-row" [class.chat-row--unread]="isUnread(chat)"
+                [class.chat-row--swiped]="swipedChatId() === chat.id"
+                (click)="swipedChatId() === chat.id ? dismissSwipe() : openChat(chat)"
+                (touchstart)="onSwipeStart($event, chat.id)" (touchmove)="onSwipeMove($event)"
+                (touchend)="onSwipeEnd()">
+                @if (chat.isGroup) {
+                <div class="chat-row__avatar chat-row__avatar--group">
+                    <span class="material-symbols-outlined">group</span>
+                    @if (isUnread(chat)) {
+                    <div class="chat-row__unread-dot"></div>
+                    }
+                </div>
+                } @else {
+                @let profile = getOtherProfile(chat);
+                <div class="chat-row__avatar">
+                    @if (profile?.photoURL) {
+                    <img [src]="profile?.photoURL" [alt]="profile?.username" />
+                    } @else {
+                    <span>{{ (profile?.username ?? '?')[0].toUpperCase() }}</span>
+                    }
+                    @if (isUnread(chat)) {
+                    <div class="chat-row__unread-dot"></div>
+                    }
+                </div>
+                }
+                <div class="chat-row__body">
+                    <div class="chat-row__top">
+                        <span class="chat-row__name">{{ chat.isGroup ? chat.groupName : (getOtherProfile(chat)?.username
+                            ??
+                            '…') }}</span>
+                        <span class="chat-row__time">{{ formatTime(chat) }}</span>
+                    </div>
+                    <span class="chat-row__preview">{{ chat.lastMessage || 'Start a conversation' }}</span>
+                </div>
+                <span class="material-symbols-outlined chat-row__chevron">chevron_right</span>
+            </button>
+        </div>
+        }
+    </div>
+
+    <!-- Compose overlay -->
+    @if (showCompose()) {
+    <div class="compose-overlay" (click)="closeCompose()">
+        <div class="compose-sheet" (click)="$event.stopPropagation()">
+            <div class="compose-sheet__header">
+                <span class="compose-sheet__title">{{ groupMode() ? 'New Group' : 'New Message' }}</span>
+                <button class="compose-sheet__close" (click)="closeCompose()" aria-label="Close">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+
+            <!-- Mode toggle -->
+            <div class="compose-mode-toggle">
+                <button class="compose-mode-toggle__btn" [class.compose-mode-toggle__btn--active]="!groupMode()"
+                    (click)="setGroupMode(false)">Direct</button>
+                <button class="compose-mode-toggle__btn" [class.compose-mode-toggle__btn--active]="groupMode()"
+                    (click)="setGroupMode(true)">Group</button>
+            </div>
+
+            <!-- Group name input (group mode only) -->
+            @if (groupMode()) {
+            <div class="compose-sheet__group-name-wrap">
+                <input class="compose-sheet__group-name-input" placeholder="Group name…" [ngModel]="groupNameInput()"
+                    (ngModelChange)="groupNameInput.set($event)" autocomplete="off" />
+            </div>
+            @if (selectedUsers().length > 0) {
+            <div class="compose-selected-users">
+                @for (user of selectedUsers(); track user.uid) {
+                <div class="compose-chip">
+                    <span class="compose-chip__name">{{ user.username }}</span>
+                    <button class="compose-chip__remove" (click)="deselectUser(user)" aria-label="Remove">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                }
+            </div>
+            }
+            <button class="compose-sheet__create-group-btn" (click)="createGroup()"
+                [disabled]="creating() || selectedUsers().length === 0 || !groupNameInput().trim()">
+                @if (creating()) { <span class="spinner"></span> } @else { Create Group }
+            </button>
+            }
+
+            <div class="compose-sheet__search-wrap">
+                <span class="material-symbols-outlined compose-sheet__search-icon">search</span>
+                <input class="compose-sheet__search-input" placeholder="Search by username…" [ngModel]="searchQuery()"
+                    (ngModelChange)="searchQuery.set($event); onSearch($event)" autocomplete="off" />
+            </div>
+            <div class="compose-sheet__results">
+                @if (searching()) {
+                <div class="compose-sheet__hint">Searching…</div>
+                } @else if (searchQuery().length >= 2 && searchResults().length === 0) {
+                <div class="compose-sheet__hint">No users found</div>
+                } @else if (searchQuery().length < 2 && searchQuery().length> 0) {
+                    <div class="compose-sheet__hint">Keep typing…</div>
+                    }
+                    @for (user of searchResults(); track user.uid) {
+                    @let isSelected = isUserSelected(user.uid);
+                    <button class="compose-user-row" [class.compose-user-row--selected]="isSelected"
+                        (click)="groupMode() ? toggleUserSelection(user) : startChat(user)" [disabled]="starting()">
+                        <div class="compose-user-row__avatar">
+                            @if (user.photoURL) {
+                            <img [src]="user.photoURL" [alt]="user.username" />
+                            } @else {
+                            <span>{{ (user.username || '?')[0].toUpperCase() }}</span>
+                            }
+                        </div>
+                        <span class="compose-user-row__name">{{ user.username }}</span>
+                        @if (groupMode()) {
+                        <span class="material-symbols-outlined compose-user-row__chevron">
+                            {{ isSelected ? 'check_circle' : 'radio_button_unchecked' }}
+                        </span>
+                        } @else {
+                        <span class="material-symbols-outlined compose-user-row__chevron">chevron_right</span>
+                        }
+                    </button>
+                    }
+            </div>
+        </div>
+    </div>
+    }
+
+</div>

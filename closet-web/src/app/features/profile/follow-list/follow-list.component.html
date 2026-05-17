@@ -1,0 +1,109 @@
+<div class="follow-list-page">
+    <header class="fl-header">
+        <button class="fl-header__back" (click)="back()" aria-label="Back">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+        </button>
+        <div class="fl-header__title d-flex">
+            <span class="fl-header__logo">VAULT.</span>
+            <span class="fl-header__tag">{{ activeTab() === 'followers' ? 'FOLLOWERS' : 'FOLLOWING' }}</span>
+        </div>
+    </header>
+
+    <!-- Tabs -->
+    <div class="fl-tabs px-4">
+        <button class="fl-tab" [class.fl-tab--active]="activeTab() === 'followers'" (click)="setTab('followers')">
+            <span class="fl-tab__count">{{ followersCount() }}</span>
+            Followers
+        </button>
+        <button class="fl-tab" [class.fl-tab--active]="activeTab() === 'following'" (click)="setTab('following')">
+            <span class="fl-tab__count">{{ followingCount() }}</span>
+            Following
+        </button>
+    </div>
+
+    <!-- Search bar -->
+    <div class="fl-search">
+        <svg class="fl-search__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input class="fl-search__input" type="search" placeholder="Search…" [value]="query()"
+            (input)="query.set($any($event.target).value)" />
+        @if (query()) {
+        <button class="fl-search__clear" (click)="query.set('')" aria-label="Clear">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+        }
+    </div>
+
+    <!-- Swipe panels -->
+    <div class="fl-panels" #panelsRef>
+
+        <!-- Followers panel -->
+        <div class="fl-panel">
+            @if (loading()) {
+            <div class="fl-empty">
+                <span class="fl-spinner"></span>
+            </div>
+            } @else if (filteredFollowers().length === 0) {
+            <div class="fl-empty">
+                <span class="material-symbols-outlined">person_search</span>
+                <p>{{ query() ? 'No results for "' + query() + '".' : 'No followers yet.' }}</p>
+            </div>
+            } @else {
+            <div class="fl-list">
+                @for (u of filteredFollowers(); track u.id) {
+                <div class="fl-row" (click)="navigateToProfile(u.id)">
+                    <div class="fl-row__avatar">
+                        @if (u.photoUrl) {
+                        <img [src]="u.photoUrl" [alt]="u.username ?? 'User'" />
+                        } @else {
+                        <span>{{ (u.username ?? 'U')[0].toUpperCase() }}</span>
+                        }
+                    </div>
+                    <div class="fl-row__info">
+                        <p class="fl-row__name">{{ u.username }}</p>
+                    </div>
+                    <span class="material-symbols-outlined fl-row__chevron">chevron_right</span>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+        <!-- Following panel -->
+        <div class="fl-panel">
+            @if (loading()) {
+            <div class="fl-empty">
+                <span class="fl-spinner"></span>
+            </div>
+            } @else if (filteredFollowing().length === 0) {
+            <div class="fl-empty">
+                <span class="material-symbols-outlined">person_search</span>
+                <p>{{ query() ? 'No results for "' + query() + '".' : 'Not following anyone yet.' }}</p>
+            </div>
+            } @else {
+            <div class="fl-list">
+                @for (u of filteredFollowing(); track u.id) {
+                <div class="fl-row" (click)="navigateToProfile(u.id)">
+                    <div class="fl-row__avatar">
+                        @if (u.photoUrl) {
+                        <img [src]="u.photoUrl" [alt]="u.username ?? 'User'" />
+                        } @else {
+                        <span>{{ (u.username ?? 'U')[0].toUpperCase() }}</span>
+                        }
+                    </div>
+                    <div class="fl-row__info">
+                        <p class="fl-row__name">{{ u.username }}</p>
+                    </div>
+                    <span class="material-symbols-outlined fl-row__chevron">chevron_right</span>
+                </div>
+                }
+            </div>
+            }
+        </div>
+
+    </div>
+</div>

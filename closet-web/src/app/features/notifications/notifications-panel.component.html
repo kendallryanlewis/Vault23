@@ -1,0 +1,46 @@
+<div class="notif-panel">
+    <div class="notif-panel__header">
+        <button class="notif-panel__back" (click)="close()">
+            <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+        <span class="notif-panel__username">{{ authService.currentUser()?.displayName || 'Notifications' }}</span>
+        @if (unreadCount() > 0) {
+        <button class="notif-panel__mark-all" (click)="markAllRead()">Mark all read</button>
+        }
+    </div>
+
+    <div class="notif-panel__list">
+        @if (!notifications().length) {
+        <div class="notif-panel__empty">
+            <span class="material-symbols-outlined notif-panel__empty-icon">notifications_none</span>
+            <p>No notifications yet</p>
+        </div>
+        }
+
+        @for (notif of notifications(); track notif.id) {
+        <div class="notif-row" [class.notif-row--unread]="!notif.read" (click)="onNotifClick(notif)">
+
+            <div class="notif-row__icon-wrap notif-row__icon-wrap--{{ notif.type }}">
+                @if (notif.fromPhotoURL) {
+                <img class="notif-row__avatar" [src]="notif.fromPhotoURL" [alt]="notif.fromUsername" />
+                <span class="notif-row__icon-badge material-symbols-outlined">{{ iconFor(notif.type) }}</span>
+                } @else {
+                <span class="material-symbols-outlined notif-row__icon">{{ iconFor(notif.type) }}</span>
+                }
+            </div>
+
+            <div class="notif-row__content">
+                <p class="notif-row__label">{{ labelFor(notif.type) }}</p>
+                <p class="notif-row__body">
+                    @if (notif.fromUsername) {<strong>{{ notif.fromUsername }}</strong> }{{ notif.body }}
+                </p>
+                <p class="notif-row__time">{{ timeAgo(notif.createdAt) }}</p>
+            </div>
+
+            <button class="notif-row__dismiss" (click)="$event.stopPropagation(); dismiss(notif)">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+        </div>
+        }
+    </div>
+</div>

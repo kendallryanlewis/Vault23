@@ -1,0 +1,354 @@
+<div class="news-feed" #newsFeed>
+    @if (tab() === 'news') {
+    <div class="sidebar-sai-bg"></div>
+    }
+
+    <header [class.header--scrolled]="tab() === 'feed' && feedScrolled()">
+        <div class="left-bank" [class.left-bank--hidden]="tab() !== 'news'"></div>
+        <div class="feed-header z-1" #feedHeader (click)="onFeedHeaderClick()"
+            [style.margin-left]="tab() === 'news' ? '-75px' : '0'">
+            <span class="feed-header__logo">VAULT.<span class="feed-header__subtitle">{{ tab() }}</span></span>
+            <div class=" feed-header__tabs">
+                <button class="feed-header__tab" [class.feed-header__tab--active]="tab() === 'home'"
+                    (click)="tab.set('home')">HOME</button>
+                <button class="feed-header__tab" [class.feed-header__tab--active]="tab() === 'news'"
+                    (click)="tab.set('news')">NEWS</button>
+                <button class="feed-header__tab" [class.feed-header__tab--active]="tab() === 'feed'"
+                    (click)="tab.set('feed')">FEED</button>
+            </div>
+        </div>
+        <button class="notif-bell" (click)="$event.stopPropagation(); notifOpen.set(true)">
+            <div class="notif-bell__icon-wrap">
+                <span class="material-symbols-outlined">notifications</span>
+                @if (unreadNotifCount() > 0) {
+                <span class="notif-bell__dot"></span>
+                }
+            </div>
+        </button>
+    </header>
+
+    @if (tab() === 'home') {
+    <div class="tab-enter tab-enter--fade home-tab">
+        <!-- Main content area -->
+        <div class="home-tab__main position-absolute p-4 z-1" style="bottom:120px">
+
+            <!-- Profile summary -->
+            <div class="home-tab__summary">
+                <h4>{{ greeting() }}</h4>
+                <hr class="greetings-divider">
+                @if (featured(); as article) {
+                <p class="home-tab__summary-news">Here's something worth a look today &mdash; <em>{{ article.title
+                        }}</em>. Give it a read when you get a chance, we think you'll enjoy it.</p>
+                }
+            </div>
+            <!-- 3 × 2 photo grid -->
+            <div class="home-tab__grid">
+                @for (slot of homeGridSlots(); track $index) {
+                @if (slot) {
+                <div class="home-tab__grid-card" [class.home-tab__grid-card--user]="slot.type === 'user'"
+                    (click)="openHomeGridSlot(slot)">
+                    <img [src]="slot.imageUrl" [alt]="slot.name" loading="lazy" />
+                    @if (slot.type === 'user') {
+                    <div class="home-tab__grid-user-label">
+                        <span class="material-symbols-outlined">storefront</span>
+                        <span class="home-tab__grid-user-name">{{ slot.name }}</span>
+                    </div>
+                    } @else {
+                    <span class="home-tab__grid-photo-icon material-symbols-outlined">{{ slot.type === 'sneaker' ?
+                        'checkroom' : 'photo_camera' }}</span>
+                    }
+                </div>
+                } @else {
+                <div class="home-tab__grid-card home-tab__grid-card--empty" (click)="goToProfile()">
+                    <span class="material-symbols-outlined">add</span>
+                </div>
+                }
+                }
+            </div>
+        </div>
+    </div>
+    }
+
+    @if (tab() === 'news') {
+    <div class="tab-enter tab-enter--fade">
+        @if (!newsLoaded()) {
+        <div class="skeleton-news">
+            @for (_ of [1,2,3,4,5,6]; track $index) {
+            <div class="skeleton-row">
+                <div class="skeleton-text">
+                    <div class="skel skel--title"></div>
+                    <div class="skel skel--meta"></div>
+                </div>
+                <div class="skel skel--thumb"></div>
+            </div>
+            }
+        </div>
+        }
+        <div class="banner-section" #bannerSection>
+            <div class="left-bank"></div>
+            <div class="banner-wrap">
+                @if (featured(); as article) {
+                <a class="featured-banner" [href]="article.sourceUrl">
+                    <div class="featured-banner__img-wrap">
+                        <img class="featured-banner__img" [src]="article.imageUrl" [alt]="article.title"
+                            loading="eager" />
+                    </div>
+                    <div class="featured-banner__overlay">
+                        <p class="featured-banner__title">{{ article.title }}</p>
+                        <p class="featured-banner__time">{{ timeAgo(article.publishedAt) }}</p>
+                    </div>
+                </a>
+                }
+            </div>
+        </div>
+
+        <div class="feed-body">
+            <div class="labels-col" #labelsCol (scroll)="onLabelsScroll()">
+                @for (section of sections(); track section.label; let last = $last) {
+                <div class="label-item">
+                    <div class="label-item__panel">
+                        <span class="label-item__text">{{ section.label }}</span>
+                    </div>
+                    @if (!last) {
+                    <div class="label-dots"><span></span><span></span><span></span></div>
+                    }
+                </div>
+                }
+                <div class="scroll-spacer"></div>
+            </div>
+
+            <div class="articles-col" #articlesCol>
+                @for (section of sections(); track section.label; let last = $last) {
+                <div class="section-panel">
+                    @for (article of allArticles(section); track article.id) {
+                    <a class="story-row" [href]="article.sourceUrl">
+                        <div class="story-row__text">
+                            <p class="story-row__title">{{ article.title }}</p>
+                            <p class="story-row__time">{{ timeAgo(article.publishedAt) }}</p>
+                        </div>
+                        <img class="story-row__thumb" [src]="article.imageUrl" [alt]="article.title" loading="lazy" />
+                    </a>
+                    }
+                </div>
+                @if (!last) {
+                <div class="section-divider"></div>
+                }
+                }
+                <div class="scroll-spacer"></div>
+            </div>
+        </div>
+    </div>
+    }
+
+    @if (tab() === 'feed') {
+    <div class="tab-enter tab-enter--slide">
+        <div class="feed-tab-layout">
+            <div class="feed-tab-body">
+                @if (!feedLoaded()) {
+                <div class="skeleton-feed">
+                    @for (_ of [1,2,3]; track $index) {
+                    <div class="skeleton-card">
+                        <div class="skeleton-card__header">
+                            <div class="skel skel--avatar"></div>
+                            <div class="skeleton-card__meta">
+                                <div class="skel skel--name"></div>
+                                <div class="skel skel--time"></div>
+                            </div>
+                        </div>
+                        <div class="skel skel--image"></div>
+                    </div>
+                    }
+                </div>
+                }
+                <div class="social-feed py-3 px-4">
+                    @if (!feedPosts().length) {
+                    <div class="social-feed__empty">
+                        <p>No posts yet. Follow people to see their closet updates here.</p>
+                    </div>
+                    }
+                    @for (post of filteredFeedPosts(); track post.postId) {
+                    <div class="feed-card">
+                        <!-- Image with overlay header and three-dot menu -->
+                        <div class="feed-card__image-wrap">
+                            <div class="feed-card__overlay-header">
+                                <img class="feed-card__avatar"
+                                    [src]="post.authorPhotoURL || 'assets/default-avatar.svg'"
+                                    [alt]="post.authorUsername" />
+                                <button class="feed-card__username" (click)="openUserProfile(post.authorUid)">{{
+                                    post.authorUsername }}</button>
+                            </div>
+                            <img class="feed-card__image" [src]="post.imageUrl" [alt]="post.caption" loading="lazy" />
+                            <button class="feed-card__more-btn" (click)="openPostMenu($event, post)">
+                                <span class="material-symbols-outlined">more_horiz</span>
+                            </button>
+                        </div>
+                        <!-- Actions -->
+                        <div class="feed-card__actions">
+                            <button class="feed-action-btn feed-action-btn--like"
+                                [class.feed-action-btn--liked]="isLikedByMe(post)"
+                                (click)="toggleFeedLike($event, post)">
+                                <span class="material-symbols-outlined">{{ isLikedByMe(post) ? 'favorite' :
+                                    'favorite_border' }}</span>
+                            </button>
+                            <button class="feed-action-btn" (click)="openComments($event, post)">
+                                <span class="material-symbols-outlined">chat_bubble_outline</span>
+                            </button>
+                            <button class="feed-action-btn" (click)="openShare($event, post)">
+                                <span class="material-symbols-outlined">send</span>
+                            </button>
+                        </div>
+                        <!-- Liked by -->
+                        @if (likeCountFor(post) > 0) {
+                        <p class="feed-card__liked-by">{{ likedByLabel(post) }}</p>
+                        }
+                        <!-- Caption: bold username + text -->
+                        @if (post.caption) {
+                        <p class="feed-card__caption"><strong>{{ post.authorUsername }}</strong> {{ post.caption }}</p>
+                        }
+                        <!-- Posted time -->
+                        <p class="feed-card__posted-time">{{ timeAgo(post.createdAt) }}</p>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+
+</div>
+
+<!-- Notifications panel -->
+@if (notifOpen()) {
+<div class="notif-backdrop" (click)="notifOpen.set(false)"></div>
+<div class="notif-drawer">
+    <app-notifications-panel (closed)="notifOpen.set(false)" />
+</div>
+}
+
+<!-- Post options menu -->
+@if (postMenuPost(); as mp) {
+<div class="sheet-backdrop" (click)="closePostMenu()"></div>
+<div class="post-menu-sheet">
+    <div class="post-menu-sheet__handle"></div>
+    <button class="post-menu-row post-menu-row--danger" (click)="unfollowFromMenu()">
+        <span class="material-symbols-outlined">person_remove</span>
+        Unfollow &#64;{{ postMenuProfile()?.username ?? mp.authorUsername }}
+    </button>
+    <button class="post-menu-row" (click)="openUserProfile(mp.authorUid); closePostMenu()">
+        <span class="material-symbols-outlined">info</span>
+        About this account
+    </button>
+    <button class="post-menu-row" (click)="hideAuthorPosts(mp.authorUid)">
+        <span class="material-symbols-outlined">visibility_off</span>
+        Hide posts from &#64;{{ postMenuProfile()?.username ?? mp.authorUsername }}
+    </button>
+    <button class="post-menu-row" (click)="markNotInterested()">
+        <span class="material-symbols-outlined">not_interested</span>
+        Not interested
+    </button>
+    <button class="post-menu-row" (click)="copyPostLink()">
+        <span class="material-symbols-outlined">content_copy</span>
+        Copy link
+    </button>
+    <button class="post-menu-row post-menu-row--cancel" (click)="closePostMenu()">
+        Cancel
+    </button>
+</div>
+}
+
+<!-- Comments panel -->
+@if (commentsPost(); as cp) {
+<div class="sheet-backdrop" (click)="closeComments()"></div>
+<div class="comments-sheet" [class.comments-sheet--full]="commentsPanelFull()">
+    <div class="comments-sheet__handle" #commentsHandle>
+    </div>
+    <p class="comments-sheet__title">Comments</p>
+    <div class="comments-sheet__list">
+        @if (!liveComments().length) {
+        <p class="comments-sheet__empty">No comments yet. Be the first!</p>
+        }
+        @for (c of liveComments(); track c.id) {
+        <div class="comment-row" [class.comment-row--reply]="!!c.replyToId">
+            <img class="comment-row__avatar" [src]="c.authorPhotoURL || 'assets/default-avatar.svg'"
+                [alt]="c.authorName" />
+            <div class="comment-row__body">
+                @if (c.replyToId) {
+                <span class="comment-row__reply-label">Replying to &#64;{{ c.replyToName }}</span>
+                }
+                <p class="comment-row__text"><strong>{{ c.authorName }}</strong> {{ c.text }}</p>
+                <div class="comment-row__meta">
+                    <span class="comment-row__time">{{ timeAgo(c.createdAt) }}</span>
+                    <button class="comment-row__reply-btn" (click)="setReplyTo($event, c)">Reply</button>
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+    @if (replyingTo(); as rt) {
+    <div class="comments-sheet__replying-to">
+        <span>Replying to &#64;{{ rt.authorName }}</span>
+        <button class="comments-sheet__replying-close" (click)="clearReply()">
+            <span class="material-symbols-outlined">close</span>
+        </button>
+    </div>
+    }
+    <div class="comments-sheet__input-bar">
+        <img class="comments-sheet__my-avatar" [src]="myAvatarUrl() || 'assets/default-avatar.svg'" alt="Me" />
+        <input class="comments-sheet__input" [value]="commentText()"
+            (input)="commentText.set($any($event.target).value)"
+            [placeholder]="'Add a comment for ' + cp.authorUsername" (keydown.enter)="submitComment()" />
+        <button class="comments-sheet__send-btn" (click)="submitComment()"
+            [disabled]="!commentText().trim() || commentSubmitting()">
+            <span class="material-symbols-outlined">send</span>
+        </button>
+    </div>
+</div>
+}
+
+<!-- Feed post detail overlay -->
+@if (selectedFeedPost(); as fp) {
+<app-post-view [posts]="[feedPostAsPost(fp)]" [startIndex]="0" [author]="feedPostAuthor(fp)" (closed)="closeFeedPost()"
+    (postDeleted)="closeFeedPost()"></app-post-view>
+}
+
+<!-- Home grid post overlay -->
+@if (selectedGridPost(); as gp) {
+@if (myProfile(); as author) {
+<app-post-view [posts]="[gp]" [startIndex]="0" [author]="author" (closed)="closeGridItem()"
+    (postDeleted)="closeGridItem()"></app-post-view>
+}
+}
+
+<!-- Home grid sneaker overlay -->
+@if (selectedGridSneaker()) {
+<app-detail-panel [item]="selectedGridSneaker()" [selectedIndex]="0" [catalogResultsLength]="1" [slideAnimating]="false"
+    (closed)="closeGridItem()"></app-detail-panel>
+}
+
+<!-- Share to DM sheet -->
+@if (sharePost()) {
+<div class="share-backdrop" (click)="closeShare()"></div>
+<div class="share-sheet">
+    <div class="share-sheet__handle"></div>
+    <p class="share-sheet__title">Send to…</p>
+    @if (shareFollowing().length === 0) {
+    <p class="share-sheet__empty">No one to send to yet. Follow people first.</p>
+    }
+    <div class="share-sheet__list">
+        @for (u of shareFollowing(); track u.uid) {
+        <button class="share-row" (click)="sendPostToUser(u)" [disabled]="shareSending()">
+            <div class="share-row__avatar">
+                @if (u.photoURL) { <img [src]="u.photoURL" [alt]="u.username" /> }
+                @else { <span>{{ (u.username || 'U')[0].toUpperCase() }}</span> }
+            </div>
+            <span class="share-row__name">{{ u.username }}</span>
+            @if (shareSent() === u.uid) {
+            <span class="share-row__sent">Sent ✓</span>
+            } @else {
+            <span class="share-row__send">Send</span>
+            }
+        </button>
+        }
+    </div>
+</div>
+}

@@ -1,0 +1,1126 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    // Extend behind status bar so bg-primary fills the safe area zone
+    height: calc(100% + env(safe-area-inset-top));
+    margin-top: calc(-1 * env(safe-area-inset-top));
+    overflow: hidden;
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(24px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+// ── Page container ─────────────────────────────────────────────────────────
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--bg-primary);
+}
+
+// ── Settings button ────────────────────────────────────────────────────────
+.profile-page__settings-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    text-decoration: none;
+    flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+
+    .material-symbols-outlined {
+        font-size: 22px;
+    }
+
+    &:active {
+        opacity: 0.5;
+    }
+}
+
+
+// ── Sticky header container ──────────────────────────────────────────────
+.profile-page__sticky-header {
+    flex-shrink: 0;
+    z-index: 10;
+    // Always pad content below the status bar regardless of expanded/collapsed state
+    padding-top: env(safe-area-inset-top);
+}
+
+// ── Hero (animates out when scrolled) ─────────────────────────────────────
+.profile-page__hero {
+    position: relative;
+    background-size: cover;
+    background-position: center top;
+    transition: background-image 0.4s ease;
+
+    &--has-bg {
+        // Taller when image is active to give the bg room to breathe
+        padding-bottom: 8px;
+    }
+}
+
+.profile-page__hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+
+    // Regular mode: dark gradient + accent tint
+    &--active {
+        background: #00000078;
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: var(--app-accent);
+            opacity: 0.18;
+            mix-blend-mode: multiply;
+        }
+    }
+
+    // Store mode: clean dark gradient, no accent tint
+    &--store {
+        background: #00000078;
+    }
+}
+
+// ── Store mode pill ───────────────────────────────────────────────────────
+.profile-page__store-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 8px;
+    padding: 5px 12px 5px 8px;
+    background: var(--app-accent);
+    color: #fff;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+
+    .material-symbols-outlined {
+        font-size: 15px;
+    }
+}
+
+// When bg image is set, make text pop
+.profile-page__hero--has-bg .profile-page__name {
+    color: #fff;
+    text-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+
+.profile-page__hero--has-bg .profile-page__email,
+.profile-page__hero--has-bg .profile-page__bio {
+    color: rgba(255, 255, 255, 0.85);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.profile-page__hero--has-bg .profile-page__settings-btn {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.profile-page__hero--has-bg .profile-page__avatar {
+    border: 2.5px solid rgba(255, 255, 255, 0.85);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+}
+
+// ── Top bar inside hero ───────────────────────────────────────────────────
+.profile-page__topbar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 8px 0;
+    position: absolute;
+    right: 0;
+    z-index: 1;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────
+.profile-page__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 16px 16px;
+    text-align: center;
+    transition: padding 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+}
+
+.profile-page--scrolled .profile-page__header {
+    align-items: flex-start;
+    padding: 6px 16px 8px;
+    text-align: left;
+}
+
+// Identity row: avatar + text — column by default, row when scrolled
+.profile-page__header-identity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    transition: gap 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-page--scrolled .profile-page__header-identity {
+    flex-direction: row;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-page__header-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.profile-page__avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--app-accent);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: #fff;
+    flex-shrink: 0;
+    border: 1px solid var(--app-accent);
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        font-size 0.25s ease;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+}
+
+.profile-page--scrolled .profile-page__avatar {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+}
+
+.profile-page__name {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-primary);
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: font-size 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.profile-page--scrolled .profile-page__name {
+    font-size: 15px;
+}
+
+.profile-page__email {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: font-size 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.35s ease;
+}
+
+.profile-page--scrolled .profile-page__email {
+    font-size: 11px;
+    opacity: 0.7;
+}
+
+.profile-page__bio {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin: 6px 0 0;
+    text-align: center;
+    max-width: 260px;
+    line-height: 1.5;
+    overflow: hidden;
+    max-height: 80px;
+    opacity: 1;
+    transition: max-height 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.3s ease,
+        margin-top 0.35s;
+}
+
+.profile-page--scrolled .profile-page__bio {
+    max-height: 0;
+    opacity: 0;
+    margin-top: 0;
+}
+
+// ── Stats row ──────────────────────────────────────────────────────────────
+.profile-page__stats {
+    display: flex;
+    border-top: 1px solid var(--border);
+    transition: font-size 0.3s;
+
+    [data-theme="dark"] & {
+        border-top-color: rgba(255, 255, 255, 0.2);
+        border-bottom-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.profile-page__stat {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px 8px;
+    transition: padding 0.3s;
+
+    &:first-child {
+        animation: fadeInLeft 0.45s cubic-bezier(0.25, 1.0, 0.4, 1.0) both;
+    }
+
+    &:last-child {
+        animation: fadeInRight 0.45s cubic-bezier(0.25, 1.0, 0.4, 1.0) both;
+    }
+
+    &+.profile-page__stat {
+        border-left: 1px solid var(--border);
+
+        [data-theme="dark"] & {
+            border-left-color: rgba(255, 255, 255, 0.2);
+        }
+    }
+
+    &--btn {
+        background: none;
+        border: none;
+        border-radius: 0;
+        font-family: inherit;
+        cursor: pointer;
+        transition: background 0.15s;
+
+        &:active {
+            background: var(--border);
+        }
+    }
+}
+
+.profile-page--scrolled .profile-page__stat {
+    padding: 7px 8px;
+}
+
+.profile-page__stat-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--text-primary);
+    transition: font-size 0.3s;
+}
+
+.profile-page--scrolled .profile-page__stat-value {
+    font-size: 15px;
+}
+
+.profile-page__stat-label {
+    font-size: 10px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-top: 2px;
+    transition: font-size 0.3s;
+}
+
+.profile-page--scrolled .profile-page__stat-label {
+    font-size: 9px;
+}
+
+// ── Icon tab bar ───────────────────────────────────────────────────────────
+.profile-page__tab-bar {
+    display: flex;
+    border-top: 1px solid var(--border);
+
+    [data-theme="dark"] & {
+        border-top-color: rgba(255, 255, 255, 0.2);
+    }
+}
+
+.profile-page__tab-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 13px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    position: relative;
+    transition: color 0.15s;
+
+    .material-symbols-outlined {
+        font-size: 22px;
+    }
+
+    &--active {
+        color: var(--app-accent);
+
+        &::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 25%;
+            right: 25%;
+            height: 2px;
+            background: var(--app-accent);
+            border-radius: 2px 2px 0 0;
+        }
+    }
+}
+
+// ── Scrollable container (everything scrolls here) ────────────────────────
+.profile-page__scroll {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+// ── Pane track ─────────────────────────────────────────────────────────────
+.profile-page__pane-track {
+    display: flex;
+    transition: transform 0.32s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+
+.profile-page__pane {
+    width: 100vw;
+    flex-shrink: 0;
+    padding: 8px 16px 24px;
+    box-sizing: border-box;
+    min-height: 100%;
+}
+
+// ── Grid ───────────────────────────────────────────────────────────────────
+.profile-page__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    // Row height = column width for square cells: (100vw - 32px padding - 8px gap) / 3
+    grid-auto-rows: calc((100vw - 40px) / 3);
+    gap: 10px;
+}
+
+// ── Card ───────────────────────────────────────────────────────────────────
+.profile-page__card {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-secondary);
+    cursor: pointer;
+}
+
+.profile-page__accent {
+    position: absolute;
+    inset: 0;
+    background: var(--app-accent);
+    opacity: 0.2;
+    z-index: 0;
+}
+
+.profile-page__card-img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: relative;
+    z-index: 1;
+
+    &--placeholder {
+        width: 100%;
+        height: 100%;
+        background: var(--bg-secondary);
+        display: block;
+    }
+}
+
+// ── Context menu ──────────────────────────────────────────────────────────
+.profile-ctx__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 300;
+    background: rgba(0, 0, 0, 0.48);
+}
+
+.profile-ctx__sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 301;
+    background: var(--bg-card);
+    border-radius: 20px 20px 0 0;
+    padding: 12px 20px 40px;
+}
+
+.profile-ctx__handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+}
+
+.profile-ctx__title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.profile-ctx__size-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.profile-ctx__size-label {
+    font-size: 13px;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.profile-ctx__size-input {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    font-family: inherit;
+}
+
+.profile-ctx__size-save {
+    background: var(--app-accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.profile-ctx__action {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    background: none;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text-primary);
+    font-family: inherit;
+    cursor: pointer;
+    text-align: left;
+
+    &:active {
+        background: var(--bg-secondary);
+    }
+
+    .material-symbols-outlined {
+        font-size: 20px;
+        color: var(--text-secondary);
+    }
+
+    &--danger {
+        color: #ff453a;
+
+        .material-symbols-outlined {
+            color: #ff453a;
+        }
+    }
+}
+
+.profile-ctx__confirm {
+    border-radius: 14px;
+    background: var(--bg-secondary);
+    padding: 14px;
+    margin-top: 4px;
+}
+
+.profile-ctx__confirm-text {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin: 0 0 12px;
+    text-align: center;
+}
+
+.profile-ctx__confirm-row {
+    display: flex;
+    gap: 10px;
+}
+
+.profile-ctx__confirm-cancel,
+.profile-ctx__confirm-delete {
+    flex: 1;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.profile-ctx__confirm-cancel {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border);
+}
+
+.profile-ctx__confirm-delete {
+    background: #ff453a;
+    color: #fff;
+}
+
+// ── Empty state ────────────────────────────────────────────────────────────
+.profile-page__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 64px 0;
+    color: var(--text-muted);
+    text-align: center;
+
+    .material-symbols-outlined {
+        font-size: 44px;
+        opacity: 0.4;
+    }
+
+    p {
+        font-size: 14px;
+        margin: 0;
+    }
+}
+
+// ── Post resize sheet ──────────────────────────────────────────────────────
+.post-sheet__sizes {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    padding: 4px 0 8px;
+}
+
+.post-sheet__size-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 14px;
+    padding: 14px 20px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-family: inherit;
+    transition: border-color 0.15s, color 0.15s;
+
+    &--active {
+        border-color: var(--app-accent);
+        color: var(--app-accent);
+    }
+
+    &:active {
+        opacity: 0.7;
+    }
+}
+
+.post-sheet__size-icon {
+    background: var(--border);
+    border-radius: 4px;
+
+    &--1x1 {
+        width: 32px;
+        height: 32px;
+    }
+
+    &--2x1 {
+        width: 64px;
+        height: 32px;
+    }
+
+    &--2x2 {
+        width: 64px;
+        height: 64px;
+    }
+}
+
+// ── For Sale badge ─────────────────────────────────────────────────────────
+.profile-page__for-sale-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    z-index: 2;
+    background: var(--accent, #F97316);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 3px 7px;
+    border-radius: 6px;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+
+// ── Warn context action ────────────────────────────────────────────────────
+.profile-ctx__action--warn {
+    color: #f59e0b;
+}
+
+// ── Listing sheet ─────────────────────────────────────────────────────────
+.listing-sheet {
+    gap: 0;
+}
+
+.listing-sheet__shoe-name {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: -6px 0 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.listing-sheet__row {
+    display: flex;
+    gap: 10px;
+}
+
+.listing-sheet__field {
+    margin-bottom: 14px;
+
+    &--half {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+.listing-sheet__label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.listing-sheet__input {
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 15px;
+    color: var(--text-primary);
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.listing-sheet__textarea {
+    width: 100%;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+    color: var(--text-primary);
+    font-family: inherit;
+    box-sizing: border-box;
+    resize: none;
+}
+
+.listing-sheet__conditions {
+    display: flex;
+    gap: 8px;
+}
+
+.listing-sheet__cond-btn {
+    flex: 1;
+    padding: 10px;
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+
+    &--active {
+        border-color: var(--accent, #F97316);
+        color: var(--accent, #F97316);
+    }
+}
+
+// ── Quantity stepper ──────────────────────────────────────────────────────
+.listing-sheet__qty {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    width: fit-content;
+}
+
+.listing-sheet__qty-btn {
+    width: 44px;
+    height: 44px;
+    background: none;
+    border: none;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--app-accent);
+    font-family: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-tap-highlight-color: transparent;
+
+    &:disabled {
+        color: var(--text-muted);
+        opacity: 0.4;
+    }
+
+    &:active:not(:disabled) {
+        background: var(--border);
+    }
+}
+
+.listing-sheet__qty-value {
+    min-width: 36px;
+    text-align: center;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text-primary);
+    border-left: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+    padding: 0 4px;
+    line-height: 44px;
+}
+
+.listing-sheet__save-btn {
+    width: 100%;
+    padding: 14px;
+    background: var(--accent, #F97316);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+    margin-top: 6px;
+
+    &:disabled {
+        opacity: 0.6;
+        cursor: default;
+    }
+}
+
+// ── Store pane listing cards ────────────────────────────────────────────────
+.store-pane__list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+// ── Group card (one card per sneaker) ──────────────────────────────────────
+.store-pane__group {
+    background: var(--bg-card);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.store-pane__group-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.store-pane__group-img-wrap {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--bg-secondary);
+}
+
+.store-pane__group-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    &--placeholder {
+        width: 100%;
+        height: 100%;
+        background: var(--bg-secondary);
+    }
+}
+
+.store-pane__group-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.store-pane__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.store-pane__group-count {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+// ── Per-size rows inside a group ────────────────────────────────────────────
+.store-pane__size-rows {
+    display: flex;
+    flex-direction: column;
+}
+
+.store-pane__size-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+
+    &+& {
+        border-top: 1px solid var(--border);
+    }
+
+    &:active {
+        background: var(--bg-secondary);
+    }
+}
+
+.store-pane__status-badge {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    background: var(--app-accent);
+    color: #fff;
+    padding: 2px 6px;
+    border-radius: 5px;
+    flex-shrink: 0;
+
+    &--pending {
+        background: #f59e0b;
+    }
+
+    &--sold {
+        background: #34c759;
+    }
+}
+
+.store-pane__size-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-primary);
+    flex-shrink: 0;
+}
+
+.store-pane__condition {
+    font-size: 12px;
+    color: var(--text-muted);
+    flex: 1;
+}
+
+.store-pane__price-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.store-pane__price {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--app-accent);
+    margin: 0;
+}
+
+.store-pane__qty-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 2px 7px;
+    letter-spacing: 0.3px;
+}
+
+.store-pane__chevron {
+    font-size: 20px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+// ── Store listing management sheet ─────────────────────────────────────────
+.store-mgmt-sheet {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 301;
+    background: var(--bg-card);
+    border-radius: 20px 20px 0 0;
+    padding: 12px 20px calc(40px + env(safe-area-inset-bottom));
+}
+
+.store-mgmt-sheet__header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.store-mgmt-sheet__thumb {
+    width: 64px;
+    height: 64px;
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--bg-secondary);
+    flex-shrink: 0;
+}
+
+.store-mgmt-sheet__title-block {
+    min-width: 0;
+}
+
+.store-mgmt-sheet__name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.store-mgmt-sheet__meta {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin: 0 0 4px;
+}
+
+.store-mgmt-sheet__price {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--app-accent);
+    margin: 0;
+}
+
+.store-mgmt-sheet__section-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0 0 10px;
+}
+
+.store-mgmt-sheet__status-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.store-mgmt-sheet__status-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 8px;
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    font-family: inherit;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+
+    .material-symbols-outlined {
+        font-size: 20px;
+    }
+
+    &--active {
+        border-color: var(--app-accent);
+        color: var(--app-accent);
+    }
+
+    &:active {
+        opacity: 0.7;
+    }
+}

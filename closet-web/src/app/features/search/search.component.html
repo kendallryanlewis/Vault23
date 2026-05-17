@@ -1,0 +1,127 @@
+<div class="search-page">
+
+    <header #headerSection class="d-flex align-items-stretch flex-shrink-0 overflow-hidden">
+        <div class="left-bank"></div>
+        <div class="page-header" #pageHeader>
+            <span class="page-header__logo">VAULT.</span>
+            <span class="page-header__tag">SEARCH</span>
+        </div>
+    </header>
+
+    <div class="search-wrap d-flex align-items-stretch flex-shrink-0" #searchWrap>
+        <div class="left-bank d-flex">
+            <div class="search-bar__icon-wrap d-flex m-auto">
+                <svg class="search-bar__icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5">
+                    <circle cx="11" cy="11" r="8" />
+                    <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                </svg>
+            </div>
+        </div>
+        <div class="search-bar d-flex align-items-center gap-2 flex-grow-1">
+            <input class="search-bar__input" type="search" placeholder="Brands, models, people…" [ngModel]="query()"
+                (ngModelChange)="onQueryChange($event)" />
+            @if (query()) {
+            <button class="search-bar__clear" (click)="onQueryChange('')" aria-label="Clear search">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+            </button>
+            }
+        </div>
+    </div>
+
+    <div class="results-body d-flex flex-grow-1 overflow-hidden">
+        <div class="left-bank left-bank--brands d-flex flex-column align-items-center gap-3">
+            @for (b of brands; track b.query) {
+            <button class="brand-btn d-flex align-items-center justify-content-center"
+                [class.brand-btn--active]="query() === b.query" (click)="searchBrand(b.query)">
+                <span class="brand-btn__logo-wrap" [attr.aria-label]="b.label">
+                    <img class="brand-btn__logo" [src]="b.logo" [alt]="b.label + ' logo'" loading="eager"
+                        fetchpriority="high" />
+                </span>
+            </button>
+            }
+        </div>
+        <div class="results-col" #resultsCol>
+
+            <!-- People section (top, only when query ≥ 2 chars and results exist) -->
+            @if (userResults().length > 0) {
+            <p class="results-section-label">People</p>
+            @for (user of userResults(); track user.uid) {
+            <div class="user-row d-flex align-items-center gap-3 p-3" (click)="openUserProfile(user.uid)">
+                <div class="user-row__avatar flex-shrink-0">
+                    @if (user.photoURL) {
+                    <img [src]="user.photoURL" [alt]="user.username" />
+                    } @else {
+                    <span>{{ (user.username || 'U')[0].toUpperCase() }}</span>
+                    }
+                </div>
+                <div class="user-row__info d-flex flex-column flex-grow-1 overflow-hidden">
+                    <p class="user-row__name mb-0">{{ user.username }}</p>
+                    @if (user.bio) {
+                    <p class="user-row__bio mb-0">{{ user.bio }}</p>
+                    }
+                </div>
+                <span class="material-symbols-outlined user-row__chevron">chevron_right</span>
+            </div>
+            }
+            <div class="result-divider results-section-divider"></div>
+            }
+
+            <!-- Items section -->
+            @if (userResults().length > 0 && catalogResults().length > 0) {
+            <p class="results-section-label">Items</p>
+            }
+            @if (searchLoading()) {
+            <div class="empty-state d-flex align-items-center justify-content-center py-5"><span class="spinner"></span>
+            </div>
+            } @else if (catalogResults().length > 0) {
+            @for (item of catalogResults(); track item.id; let last = $last) {
+            <div class="result-row d-flex align-items-center gap-3 p-3" (click)="selectItem(item)">
+                <div class="result-row__text d-flex flex-column gap-1 flex-grow-1 overflow-hidden">
+                    <p class="result-row__name mb-0">{{ item.name }}</p>
+                    <p class="result-row__meta mb-0">{{ item.brand }}@if (item.retailPrice) { · ${{ item.retailPrice }}
+                        retail}</p>
+                </div>
+                @if (item.imageUrl) {
+                <img class="result-row__thumb flex-shrink-0" [src]="item.imageUrl" [alt]="item.name" loading="lazy" />
+                } @else {
+                <div class="result-row__thumb result-row__thumb--placeholder flex-shrink-0"></div>
+                }
+            </div>
+            @if (!last) { <div class="result-divider"></div> }
+            }
+            <div class="pagination d-flex align-items-center justify-content-center gap-4">
+                <button class="pagination__btn d-flex align-items-center justify-content-center"
+                    [disabled]="page() === 0" (click)="prevPage()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <polyline points="15 18 9 12 15 6" />
+                    </svg>
+                </button>
+                <span class="pagination__label">{{ page() + 1 }} / {{ totalPages() }}</span>
+                <button class="pagination__btn d-flex align-items-center justify-content-center"
+                    [disabled]="page() >= totalPages() - 1" (click)="nextPage()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
+                        <polyline points="9 18 15 12 9 6" />
+                    </svg>
+                </button>
+            </div>
+            } @else if (query().length > 2 && !searchLoading()) {
+            <div class="empty-state d-flex align-items-center justify-content-center py-5">
+                <p class="mb-0">No results for "{{ query() }}"</p>
+            </div>
+            }
+
+        </div>
+    </div>
+
+</div>
+
+<app-detail-panel [item]="selectedItem()" [selectedIndex]="selectedIndex()"
+    [catalogResultsLength]="catalogResults().length" [slideAnimating]="slideAnimating()" [carouselDir]="carouselDir()"
+    (closed)="closeItem()" (navigatedNext)="navigateNext()" (navigatedPrev)="navigatePrev()">
+</app-detail-panel>

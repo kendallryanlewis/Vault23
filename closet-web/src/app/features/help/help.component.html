@@ -1,0 +1,283 @@
+<div class="settings-page">
+
+    <!-- Header -->
+    <header class="s-header">
+        <div class="s-header__body">
+            <button class="s-header__back" (click)="back()" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+            </button>
+            <div class="s-header__title">
+                <span class="s-header__logo">VAULT.</span><span class="s-header__tag">HELP</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="s-body">
+        <div class="s-content">
+
+            <p class="help-intro">Everything you need to know about Vault23.</p>
+
+            <!-- ── GETTING STARTED ── -->
+            <p class="section-label">Getting Started</p>
+
+            <div class="h-item" (click)="toggle('closet')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">checkroom</span>
+                    <span class="h-item__title">Building Your Closet</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'closet'">expand_more</span>
+                </div>
+                @if (openSection() === 'closet') {
+                <p class="h-item__body">
+                    Search for any sneaker using the Search tab. Tap a result and press <strong>Add to Closet</strong>
+                    to save it. Your closet is visible on your profile and can be browsed by other users.
+                    Long-press any shoe on your profile to resize its card, set it as a home display item, or list
+                    it for sale.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('wishlist')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">favorite</span>
+                    <span class="h-item__title">Wishlist</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'wishlist'">expand_more</span>
+                </div>
+                @if (openSection() === 'wishlist') {
+                <p class="h-item__body">
+                    Save sneakers you want to your Wishlist by tapping <strong>Add to Wishlist</strong> on any search
+                    result. Your wishlist stays private and helps you track grail targets.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('posts')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">photo_camera</span>
+                    <span class="h-item__title">Creating Posts</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'posts'">expand_more</span>
+                </div>
+                @if (openSection() === 'posts') {
+                <p class="h-item__body">
+                    Tap the camera icon in the tab bar to take or upload a photo. Add a caption and tap
+                    <strong>Post</strong>. Posts appear in your profile grid and in the feeds of your followers.
+                    Long-press any post on your profile to resize it, add it as a home display item, or list
+                    the item in it for sale in your store.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('follow')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">group</span>
+                    <span class="h-item__title">Following &amp; Followers</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'follow'">expand_more</span>
+                </div>
+                @if (openSection() === 'follow') {
+                <p class="h-item__body">
+                    Visit another user's profile and tap <strong>Follow</strong> to see their drops in your home
+                    feed. You'll receive a notification when someone follows you back.
+                </p>
+                }
+            </div>
+
+            <!-- ── STORE MODE ── -->
+            <p class="section-label">Store Mode</p>
+
+            <div class="h-item" (click)="toggle('store-what')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">storefront</span>
+                    <span class="h-item__title">What is Store Mode?</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'store-what'">expand_more</span>
+                </div>
+                @if (openSection() === 'store-what') {
+                <p class="h-item__body">
+                    Store Mode turns your profile into a public storefront. When enabled, visitors see a dedicated
+                    <strong>Shop</strong> tab with all your active listings, your store description, policies, and
+                    a location map. A "Store" badge appears on your profile card in search and home grids so buyers
+                    can identify sellers at a glance.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('store-enable')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">toggle_on</span>
+                    <span class="h-item__title">How to Enable Store Mode</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'store-enable'">expand_more</span>
+                </div>
+                @if (openSection() === 'store-enable') {
+                <p class="h-item__body">
+                    Go to <strong>Profile → Settings → Store</strong> and toggle <em>Store Mode</em> on.
+                    You can also add a store description, return policies, and a location so buyers know
+                    where you're based. Don't forget to tap <strong>Save</strong> when you're done.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('store-list')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">add_shopping_cart</span>
+                    <span class="h-item__title">Listing Items for Sale</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'store-list'">expand_more</span>
+                </div>
+                @if (openSection() === 'store-list') {
+                <p class="h-item__body">
+                    Long-press any shoe in your Closet tab and tap <strong>Add Size Listing</strong>. Set the
+                    size, condition, asking price, and quantity, then tap <strong>Publish Listing</strong>.
+                    You can create multiple listings for the same shoe at different sizes — they'll be grouped
+                    together on your store page. To list a post item, long-press a post and tap
+                    <strong>List for Sale</strong>.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('store-manage')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">edit_note</span>
+                    <span class="h-item__title">Managing Listings</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'store-manage'">expand_more</span>
+                </div>
+                @if (openSection() === 'store-manage') {
+                <p class="h-item__body">
+                    Go to your <strong>Profile → Store tab</strong> to see all your active listings grouped by
+                    shoe. Tap any size row to open the management sheet where you can change the status
+                    (<em>Available / Pending / Sold</em>), edit the details, or delete the listing entirely.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('store-buy')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">shopping_bag</span>
+                    <span class="h-item__title">Buying from a Store</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'store-buy'">expand_more</span>
+                </div>
+                @if (openSection() === 'store-buy') {
+                <p class="h-item__body">
+                    Find a seller via Search or your home feed. Visit their profile and open the
+                    <strong>Shop tab</strong>. Tap a listing to see full details — size, condition, price, and
+                    quantity. Tap <strong>Message to Buy</strong> to open a pre-filled direct message
+                    asking about that specific item. All transactions are arranged privately between buyer and
+                    seller.
+                </p>
+                }
+            </div>
+
+            <!-- ── SOCIAL ── -->
+            <p class="section-label">Social &amp; Messaging</p>
+
+            <div class="h-item" (click)="toggle('dm')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">chat</span>
+                    <span class="h-item__title">Direct Messages</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'dm'">expand_more</span>
+                </div>
+                @if (openSection() === 'dm') {
+                <p class="h-item__body">
+                    Open the Messages tab to start or continue a conversation. Tap any user's avatar across
+                    the app to visit their profile, then tap the message icon to open a DM thread. Messages
+                    support text and photo sharing.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('notifications')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">notifications</span>
+                    <span class="h-item__title">Notifications &amp; Push Alerts</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'notifications'">expand_more</span>
+                </div>
+                @if (openSection() === 'notifications') {
+                <p class="h-item__body">
+                    Vault23 sends push notifications to your iPhone for messages, comments, likes, and new
+                    followers. Make sure notifications are enabled in <strong>iOS Settings → Vault23</strong>.
+                    You can review all past notifications in the bell icon on the home screen.
+                </p>
+                }
+            </div>
+
+            <!-- ── DROPS ── -->
+            <p class="section-label">Drops &amp; News</p>
+
+            <div class="h-item" (click)="toggle('drops')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">new_releases</span>
+                    <span class="h-item__title">Sneaker Drops</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'drops'">expand_more</span>
+                </div>
+                @if (openSection() === 'drops') {
+                <p class="h-item__body">
+                    The Drops tab shows upcoming and recent sneaker releases pulled daily from top sources.
+                    Tap any drop to see release details. Follow a drop to get notified when it goes live.
+                </p>
+                }
+            </div>
+
+            <!-- ── CUSTOMISATION ── -->
+            <p class="section-label">Customisation</p>
+
+            <div class="h-item" (click)="toggle('theme')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">palette</span>
+                    <span class="h-item__title">Accent Color &amp; Theme</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'theme'">expand_more</span>
+                </div>
+                @if (openSection() === 'theme') {
+                <p class="h-item__body">
+                    In Settings you can pick your accent colour from a palette or enter any hex value, and
+                    switch between Dark, Light, and Auto (follows system) modes. Changes apply instantly
+                    across the whole app.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('wallpaper')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">image</span>
+                    <span class="h-item__title">Profile Wallpaper</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'wallpaper'">expand_more</span>
+                </div>
+                @if (openSection() === 'wallpaper') {
+                <p class="h-item__body">
+                    Go to <strong>Settings → Profile</strong> to upload a custom wallpaper image or choose
+                    one of the built-in backgrounds. Your wallpaper appears behind your avatar and name on
+                    your profile hero, and is visible to other users who visit your profile.
+                </p>
+                }
+            </div>
+
+            <div class="h-item" (click)="toggle('grid')">
+                <div class="h-item__row">
+                    <span class="material-symbols-outlined h-item__icon">grid_view</span>
+                    <span class="h-item__title">Resizing Cards</span>
+                    <span class="material-symbols-outlined h-item__chevron"
+                        [class.h-item__chevron--open]="openSection() === 'grid'">expand_more</span>
+                </div>
+                @if (openSection() === 'grid') {
+                <p class="h-item__body">
+                    Long-press any shoe or post card on your profile to resize it. Choose
+                    <em>Small (1×1)</em>, <em>Wide (2×1)</em>, or <em>Large (2×2)</em> to create a
+                    personalised mosaic layout. Your grid layout is saved automatically.
+                </p>
+                }
+            </div>
+
+        </div>
+    </div>
+</div>

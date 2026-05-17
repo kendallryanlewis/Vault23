@@ -1,0 +1,272 @@
+<div class="settings-page">
+
+    <!-- Header -->
+    <header class="s-header">
+        <div class="s-header__body">
+            <button class="s-header__back" (click)="back()" aria-label="Back">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <polyline points="15 18 9 12 15 6" />
+                </svg>
+            </button>
+            <div class="s-header__title">
+                <span class="s-header__logo">VAULT.</span>
+                <span class="s-header__tag">SETTINGS</span>
+            </div>
+            <button class="s-header__save-btn" (click)="saveAll()" [disabled]="saving()" aria-label="Save">
+                @if (saving()) {
+                <span class="spinner spinner--sm"></span>
+                } @else if (success()) {
+                <span class="material-symbols-outlined s-header__save-check">check_circle</span>
+                } @else {
+                Save
+                }
+            </button>
+        </div>
+    </header>
+
+    <!-- Scrollable body -->
+    <div class="s-body">
+        <div class="s-content">
+
+            <!-- ── PROFILE ── -->
+            <p class="section-label">Profile</p>
+
+            <!-- Avatar -->
+            <label class="avatar-row" aria-label="Change profile photo">
+                <div class="avatar">
+                    @if (photoPreview()) {
+                    <img [src]="photoPreview()!" alt="Profile photo" />
+                    } @else {
+                    <span class="material-symbols-outlined">person</span>
+                    }
+                </div>
+                <div class="avatar-info">
+                    <span class="avatar-info__name">{{ username() || 'No username' }}</span>
+                    <span class="avatar-info__hint">Tap to change photo</span>
+                </div>
+                <input type="file" accept="image/*" (change)="onAvatarChange($event)" hidden />
+            </label>
+
+            <!-- Profile Wallpaper -->
+            <div class="wallpaper-row">
+                <div class="wallpaper-row__preview" [class.wallpaper-row__preview--empty]="!wallpaperPreview()">
+                    @if (wallpaperPreview()) {
+                    <img [src]="wallpaperPreview()!" alt="Profile wallpaper" />
+                    } @else {
+                    <span class="material-symbols-outlined">image</span>
+                    }
+                    @if (wallpaperUploading()) {
+                    <div class="wallpaper-row__uploading">
+                        <span class="spinner spinner--sm"></span>
+                    </div>
+                    }
+                </div>
+                <div class="wallpaper-row__info">
+                    <span class="wallpaper-row__title">Profile Wallpaper</span>
+                    <span class="wallpaper-row__hint">Shown on your public profile. Defaults to your app
+                        background.</span>
+                    <div class="wallpaper-row__actions">
+                        <label class="wallpaper-row__upload-btn" aria-label="Upload wallpaper">
+                            <span class="material-symbols-outlined">upload</span>
+                            Upload
+                            <input type="file" accept="image/*" (change)="onWallpaperChange($event)" hidden />
+                        </label>
+                        @if (wallpaperPreview()) {
+                        <button class="wallpaper-row__clear-btn" (click)="clearWallpaper()"
+                            type="button">Remove</button>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile form card -->
+            <div class="form-card">
+                <div class="form-field">
+                    <label class="form-field__label">Username</label>
+                    <input class="form-field__input" type="text" placeholder="@username" [ngModel]="username()"
+                        (ngModelChange)="username.set($event)" maxlength="40" autocomplete="off" />
+                </div>
+                <div class="form-card__divider"></div>
+                <div class="form-field">
+                    <label class="form-field__label">Bio</label>
+                    <textarea class="form-field__textarea" [ngModel]="bio()" (ngModelChange)="bio.set($event)"
+                        placeholder="Tell people about yourself…" rows="3" maxlength="200"></textarea>
+                    <span class="form-field__char-count">{{ bio().length }}/200</span>
+                </div>
+                <div class="form-card__divider"></div>
+                <div class="form-field">
+                    <label class="form-field__label">Location</label>
+                    <input class="form-field__input" type="text" placeholder="City" [ngModel]="location()"
+                        (ngModelChange)="location.set($event)" maxlength="60" autocomplete="off" />
+                </div>
+                <div class="form-card__divider"></div>
+                <div class="form-field">
+                    <label class="form-field__label">Shoe Size</label>
+                    <input class="form-field__input" type="text" placeholder="e.g. 10.5" [ngModel]="shoeSize()"
+                        (ngModelChange)="shoeSize.set($event)" maxlength="10" autocomplete="off" />
+                </div>
+            </div>
+
+            <!-- ── APPEARANCE ── -->
+            <p class="section-label">Appearance</p>
+
+            <div class="form-card">
+                <div class="form-field">
+                    <label class="form-field__label">Mode</label>
+                    <div class="mode-toggle">
+                        <button class="mode-toggle__btn" [class.mode-toggle__btn--active]="themeMode() === 'dark'"
+                            (click)="selectMode('dark')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+                            </svg>
+                            Dark
+                        </button>
+                        <button class="mode-toggle__btn" [class.mode-toggle__btn--active]="themeMode() === 'light'"
+                            (click)="selectMode('light')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <circle cx="12" cy="12" r="5" />
+                                <line x1="12" y1="1" x2="12" y2="3" />
+                                <line x1="12" y1="21" x2="12" y2="23" />
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                                <line x1="1" y1="12" x2="3" y2="12" />
+                                <line x1="21" y1="12" x2="23" y2="12" />
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                            </svg>
+                            Light
+                        </button>
+                        <button class="mode-toggle__btn" [class.mode-toggle__btn--active]="themeMode() === 'auto'"
+                            (click)="selectMode('auto')">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="5" y="2" width="14" height="20" rx="2" />
+                                <line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3" stroke-linecap="round" />
+                            </svg>
+                            System
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-card__divider"></div>
+
+                <div class="form-field">
+                    <label class="form-field__label">Accent Color</label>
+                    <div class="color-palette">
+                        @for (c of presetColors; track c) {
+                        <button class="color-preset" [style.background]="c"
+                            [class.color-preset--active]="themeColor() === c" (click)="selectColor(c)"
+                            [attr.aria-label]="c"></button>
+                        }
+                    </div>
+                </div>
+
+                <div class="form-card__divider"></div>
+
+                <div class="form-field">
+                    <label class="form-field__label">App Background</label>
+                    <div class="bg-cycle">
+                        <button class="bg-cycle__arrow" (click)="cycleBg(-1)" aria-label="Previous background">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <polyline points="15 18 9 12 15 6" />
+                            </svg>
+                        </button>
+                        <div class="bg-cycle__preview">
+                            @if (bgPresetIdx() > 0) {
+                            <img [src]="'/assets/backgrounds/' + bgPresets[bgPresetIdx()]" alt="Background preview" />
+                            <span class="bg-cycle__name">{{ bgPresets[bgPresetIdx()].split('.')[0].replace('_', ' ')
+                                }}</span>
+                            } @else {
+                            <span class="material-symbols-outlined bg-cycle__none-icon">hide_image</span>
+                            <span class="bg-cycle__name">None</span>
+                            }
+                        </div>
+                        <button class="bg-cycle__arrow" (click)="cycleBg(1)" aria-label="Next background">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <polyline points="9 18 15 12 9 6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── PRIVACY ── -->
+            <p class="section-label">Privacy</p>
+
+            <div class="form-card">
+                <div class="form-field">
+                    <label class="form-field__label">Hidden Users</label>
+                    @if (hiddenUsers().length === 0) {
+                    <p class="form-field__hint">No users hidden.</p>
+                    } @else {
+                    <div class="hidden-posts-list">
+                        @for (user of hiddenUsers(); track user.uid) {
+                        <div class="hidden-post-row">
+                            @if (user.photoURL) {
+                            <img class="hidden-post-row__avatar" [src]="user.photoURL" alt="" />
+                            }
+                            <span class="hidden-post-row__id">{{ user.username || 'Unknown user' }}</span>
+                            <button class="hidden-post-row__unhide" (click)="unhideUser(user.uid)">Show posts</button>
+                        </div>
+                        }
+                    </div>
+                    }
+                </div>
+            </div>
+
+            <!-- ── STORE BRAND ── -->
+            <p class="section-label">Store Brand</p>
+
+            <div class="form-card">
+                <div class="form-field form-field--row">
+                    <label class="form-field__label">Enable Store Brand</label>
+                    <button class="toggle-btn" [class.toggle-btn--on]="isStoreBrand()"
+                        (click)="isStoreBrand.set(!isStoreBrand())" [attr.aria-pressed]="isStoreBrand()"
+                        aria-label="Toggle store brand">
+                        <span class="toggle-btn__knob"></span>
+                    </button>
+                </div>
+                @if (isStoreBrand()) {
+                <div class="form-card__divider"></div>
+                <div class="form-field">
+                    <label class="form-field__label">Store Description</label>
+                    <textarea class="form-field__textarea" [ngModel]="storeDescription()"
+                        (ngModelChange)="storeDescription.set($event)" placeholder="Tell buyers about your store…"
+                        rows="3" maxlength="400"></textarea>
+                    <span class="form-field__char-count">{{ storeDescription().length }}/400</span>
+                </div>
+                <div class="form-card__divider"></div>
+                <div class="form-field">
+                    <label class="form-field__label">Store Policies</label>
+                    <textarea class="form-field__textarea" [ngModel]="storePolicies()"
+                        (ngModelChange)="storePolicies.set($event)" placeholder="Shipping, returns, payment methods…"
+                        rows="4" maxlength="600"></textarea>
+                    <span class="form-field__char-count">{{ storePolicies().length }}/600</span>
+                </div>
+                }
+            </div>
+
+            <!-- ── SUPPORT ── -->
+            <p class="section-label">Support</p>
+
+            <div class="form-card">
+                <button class="nav-row px-2" (click)="goHelp()">
+                    <span class="material-symbols-outlined nav-row__icon">help_outline</span>
+                    <span class="nav-row__label">Help &amp; Guide</span>
+                    <span class="material-symbols-outlined nav-row__chevron">chevron_right</span>
+                </button>
+            </div>
+
+            <!-- ── ACCOUNT ── -->
+            <p class="section-label">Account</p>
+
+            <div class="form-card form-card--danger mb-5">
+                <button class="sign-out-btn" (click)="logout()">Sign out</button>
+            </div>
+        </div>
+    </div>
+
+</div>

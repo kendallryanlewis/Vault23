@@ -1,0 +1,314 @@
+<div class="detail-panel px-4" [class.detail-panel--open]="item() !== null" [style.--scroll-ratio]="scrollRatio()">
+    @if (item(); as shoe) {
+
+    <!-- ── Sticky header: topbar + title + hero ──────────────────────────── -->
+    <div class="detail-panel__sticky-header">
+        <!-- Top bar -->
+        <div class="detail-panel__topbar d-flex align-items-center py-4 justify-content-between">
+            <div class="d-flex align-items-center gap-2">
+                <button class="detail-panel__back-btn d-flex align-items-center justify-content-center"
+                    (click)="closed.emit()" aria-label="Back">
+                    <div class="detail-panel__back-btn-inner d-flex align-items-center justify-content-center">
+                        <span class="material-symbols-outlined">chevron_left</span>
+                    </div>
+                </button>
+                @if (brandLogoUrl(shoe.brand); as logoUrl) {
+                <span class="detail-panel__topbar-brand-logo-wrap">
+                    <img class="detail-panel__topbar-brand-logo" [src]="logoUrl" [alt]="shoe.brand + ' logo'" />
+                </span>
+                } @else {
+                <span class="detail-panel__topbar-logo">{{ shoe.brand }}</span>
+                }
+            </div>
+            <div class="detail-panel__topbar-actions d-flex align-items-center gap-2">
+                <button class="detail-panel__topbar-btn d-flex align-items-center justify-content-center"
+                    [class.detail-panel__topbar-btn--liked]="isLiked()" (click)="toggleLike(shoe)" aria-label="Like">
+                    <span class="material-symbols-outlined">{{ isLiked() ? 'favorite' : 'favorite_border' }}</span>
+                </button>
+                <button class="detail-panel__topbar-btn d-flex align-items-center justify-content-center"
+                    aria-label="Search" (click)="searchSilhouette()">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <button class="detail-panel__topbar-btn d-flex align-items-center justify-content-center"
+                    aria-label="Messages" (click)="openSendPanel()">
+                    <span class="material-symbols-outlined">mail</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Title section -->
+        <div class="detail-panel__title-section pb-3 col-8  pb-4"
+            [class.detail-panel__slide--out-left]="slideAnimating() && carouselDir() === 'right'"
+            [class.detail-panel__slide--out-right]="slideAnimating() && carouselDir() === 'left'"
+            [class.detail-panel__slide--in-right]="!slideAnimating() && carouselDir() === 'right'"
+            [class.detail-panel__slide--in-left]="!slideAnimating() && carouselDir() === 'left'">
+            <h2 class="detail-panel__name">{{ shoe.name }}</h2>
+            <p class="detail-panel__brand-label mb-0">{{ shoe.brand }}</p>
+        </div>
+
+        <!-- Hero: accent + shoe scale to top-right; brand-vert lives outside scaled element -->
+        <div class="detail-panel__hero-wrap pb-4">
+            <div class="position-relative z-1">
+                <div class="row">
+                    <div class="col-8 detail-panel__hero z-1">
+                        <div class="detail-panel__visual-dots"></div>
+                        <div class="detail-panel__visual-accent p-5">
+                            <div class="insider-accent w-100 h-100"></div>
+                        </div>
+                        <img class="detail-panel__shoe position-absolute top-0"
+                            [class.detail-panel__shoe--slide-out-left]="slideAnimating() && carouselDir() === 'right'"
+                            [class.detail-panel__shoe--slide-out-right]="slideAnimating() && carouselDir() === 'left'"
+                            [class.detail-panel__shoe--slide-in-right]="!slideAnimating() && carouselDir() === 'right'"
+                            [class.detail-panel__shoe--slide-in-left]="!slideAnimating() && carouselDir() === 'left'"
+                            [src]="detailItem()?.goatImages?.main_picture_url || shoe.largeImageUrl || shoe.imageUrl"
+                            [alt]="shoe.name" /><!-- Brand-vert outside __hero so it is unaffected by the scale transform -->
+                    </div>
+                    <div class="col-4">
+                        <div class="detail-panel__visual-side">
+                            <span class="detail-panel__brand-vert" [style.font-size]="brandVertSize(shoe.brand)">{{
+                                shoe.brand
+                                }}</span>
+                            @if (resalePrices().length) {
+                            <div class="detail-panel__resale-peek">
+                                @for (market of resalePrices().slice(0, 3); track market.label) {
+                                @if (market.url) { <a
+                                    class="detail-panel__resale-card detail-panel__resale-card--linked"
+                                    [href]="market.url" target="_blank" rel="noopener">
+                                    <span class="detail-panel__resale-price">${{ market.price }}</span>
+                                    <span class="detail-panel__resale-label">{{ market.label }}</span>
+                                </a>
+                                } @else {
+                                <div class="detail-panel__resale-card">
+                                    <span class="detail-panel__resale-price">${{ market.price }}</span>
+                                    <span class="detail-panel__resale-label">{{ market.label }}</span>
+                                </div>
+                                }
+                                }
+                            </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Body: price, description, resale data, meta -->
+    <div class="detail-panel__body d-flex flex-column gap-3 pb-4"
+        [class.detail-panel__slide--out-left]="slideAnimating() && carouselDir() === 'right'"
+        [class.detail-panel__slide--out-right]="slideAnimating() && carouselDir() === 'left'"
+        [class.detail-panel__slide--in-right]="!slideAnimating() && carouselDir() === 'right'"
+        [class.detail-panel__slide--in-left]="!slideAnimating() && carouselDir() === 'left'">
+
+        <div class="detail-panel__price-row d-flex align-items-baseline gap-2 flex-wrap">
+            @if (displayResellPrice(); as price) {
+            <span class="detail-panel__price">${{ price }}</span>
+            }
+            @if (displayRetailPrice(); as retail) {
+            <span class="detail-panel__price-retail">${{ retail }} retail</span>
+            }
+        </div>
+
+        <p class="detail-panel__brand-sub mb-0">{{ shoe.colorway }}</p>
+
+        @if (detailLoading()) {
+        <div class="d-flex justify-content-center py-3"><span class="spinner"></span></div>
+        }
+
+        @if (detailItem()?.description || detailItem()?.story) {
+        <p class="detail-panel__description mb-0">{{ detailItem().description || detailItem().story }}</p>
+        }
+
+        @if (buyLinks(); as links) {
+        <div class="detail-panel__section">
+            <p class="detail-panel__section-label">Buy On</p>
+            <div class="detail-panel__buy-links">
+                @for (link of links; track link.label) {
+                <a class="detail-panel__buy-link" [href]="link.url" target="_blank" rel="noopener">{{ link.label
+                    }}</a>
+                }
+            </div>
+        </div>
+        }
+
+        @if (marketData(); as market) {
+        <div class="detail-panel__section">
+            <p class="detail-panel__section-label">Market</p>
+            <div class="detail-panel__chip-grid">
+                @for (chip of market; track chip.label) {
+                <div class="detail-panel__chip">
+                    <span class="detail-panel__chip-value">{{ chip.value }}</span>
+                    <span class="detail-panel__chip-label">{{ chip.label }}</span>
+                </div>
+                }
+            </div>
+        </div>
+        }
+
+        @if (designDetails(); as details) {
+        <div class="detail-panel__section">
+            <p class="detail-panel__section-label">Details</p>
+            <div class="detail-panel__detail-list">
+                @for (row of details; track row.label) {
+                <div class="detail-panel__detail-row">
+                    <span class="detail-panel__detail-row-label">{{ row.label }}</span>
+                    <span class="detail-panel__detail-row-value">{{ row.value }}</span>
+                </div>
+                }
+            </div>
+        </div>
+        }
+
+        @if (detailItem()?.releaseDate || shoe.styleId) {
+        <div class="detail-panel__section">
+            <p class="detail-panel__section-label">Release Info</p>
+            <div class="detail-panel__detail-list">
+                @if (detailItem()?.releaseDateName) {
+                <div class="detail-panel__detail-row">
+                    <span class="detail-panel__detail-row-label">Name</span>
+                    <span class="detail-panel__detail-row-value">{{ detailItem().releaseDateName }}</span>
+                </div>
+                }
+                @if (detailItem()?.releaseDate) {
+                <div class="detail-panel__detail-row">
+                    <span class="detail-panel__detail-row-label">Date</span>
+                    <span class="detail-panel__detail-row-value">{{ formatDate(detailItem().releaseDate) }}</span>
+                </div>
+                }
+                @if (shoe.styleId) {
+                <div class="detail-panel__detail-row">
+                    <span class="detail-panel__detail-row-label">Style ID</span>
+                    <span class="detail-panel__detail-row-value">{{ shoe.styleId }}</span>
+                </div>
+                }
+            </div>
+        </div>
+        }
+
+        @if (sizePrices(); as sizes) {
+        <div class="detail-panel__section">
+            <p class="detail-panel__section-label">Prices by Size (US)</p>
+            <div class="detail-panel__size-cards">
+                @for (row of sizes; track row.size) {
+                <div class="detail-panel__size-card">
+                    <span class="detail-panel__size-card-num">{{ row.size }}</span>
+                    <div class="detail-panel__size-card-prices">
+                        <div class="detail-panel__size-card-row">
+                            <span class="detail-panel__size-card-platform">SX</span>
+                            <span class="detail-panel__size-card-price">{{ row.stockX ? '$' + row.stockX : '—' }}</span>
+                        </div>
+                        <div class="detail-panel__size-card-row">
+                            <span class="detail-panel__size-card-platform">GT</span>
+                            <span class="detail-panel__size-card-price">{{ row.goat ? '$' + row.goat : '—' }}</span>
+                        </div>
+                        <div class="detail-panel__size-card-row">
+                            <span class="detail-panel__size-card-platform">FC</span>
+                            <span class="detail-panel__size-card-price">{{ row.flightClub ? '$' + row.flightClub : '—'
+                                }}</span>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+        </div>
+        } @else if (availableSizes(); as sizes) {
+        <!--<div class="detail-panel__section">
+            <p class="detail-panel__section-label">Available Sizes (US)</p>
+            <div class="detail-panel__size-grid">
+                @for (s of sizes; track s) {
+                <div class="detail-panel__size-chip">{{ s }}</div>
+                }
+            </div>
+        </div>-->
+        }
+    </div>
+
+    <!-- ── CTAs: sticky bottom ────────────────────────────────────────────── -->
+    <div class="detail-panel__cta-row d-flex gap-2 py-4" [class.detail-panel__cta-row--hidden]="ctaHidden()">
+        @if (addSuccess() || isInCloset()) {
+        <button
+            class="detail-panel__cta detail-panel__cta--success d-flex align-items-center justify-content-center flex-grow-1"
+            (click)="viewCloset()">
+            <span class="material-symbols-outlined" style="font-size:18px;margin-right:6px">check</span>View Closet
+        </button>
+        } @else {
+        <button
+            class="detail-panel__cta detail-panel__cta--primary d-flex align-items-center justify-content-center flex-grow-1"
+            [disabled]="addSaving()" (click)="addToCloset(shoe)">
+            @if (addSaving()) {
+            <span class="spinner"></span>
+            } @else {
+            Add to Closet
+            }
+        </button>
+        }
+        @if (shoe.sourceUrl) {
+        <a class="detail-panel__cta detail-panel__cta--muted d-flex align-items-center justify-content-center"
+            [href]="shoe.sourceUrl" target="_blank" rel="noopener">
+            <span class="material-symbols-outlined" style="font-size:18px">open_in_new</span>
+        </a>
+        }
+    </div>
+
+    <!-- ── Image grid overlay ───────────────────────────────────────────── -->
+    @if (showImageGrid()) {
+    <div class="detail-panel__img-grid-overlay" (click)="showImageGrid.set(false)">
+        <div class="detail-panel__img-grid-inner" (click)="$event.stopPropagation()">
+            <button class="detail-panel__img-grid-close" (click)="showImageGrid.set(false)" aria-label="Close">
+                <span class="material-symbols-outlined">close</span>
+            </button>
+            <div class="detail-panel__img-grid-scroll">
+                @if (allImages().length) {
+                @for (url of allImages(); track url) {
+                <img class="detail-panel__img-grid-thumb" [src]="url" loading="lazy" alt="Shoe image" />
+                }
+                } @else {
+                <p class="detail-panel__img-grid-empty">No additional images available.</p>
+                }
+            </div>
+        </div>
+    </div>
+    }
+
+    <!-- ── Send-to-user panel ───────────────────────────────────────────── -->
+    @if (showSendPanel()) {
+    <div class="detail-panel__send-backdrop" (click)="showSendPanel.set(false)"></div>
+    <div class="detail-panel__send-panel">
+        <div class="detail-panel__send-handle"></div>
+        <p class="detail-panel__send-title">Send to...</p>
+        <div class="detail-panel__send-search">
+            <span class="material-symbols-outlined detail-panel__send-search-icon">search</span>
+            <input class="detail-panel__send-input" type="text" placeholder="Search users" [ngModel]="sendQuery()"
+                (ngModelChange)="sendQuery.set($event); searchSendUsers()" autocomplete="off" />
+        </div>
+        @if (sendResults().length) {
+        <div class="detail-panel__send-results">
+            @for (profile of sendResults(); track profile.uid) {
+            <div class="detail-panel__send-user" (click)="sendToUser(profile, shoe)">
+                @if (profile.photoURL) {
+                <img class="detail-panel__send-avatar" [src]="profile.photoURL" [alt]="profile.username" />
+                } @else {
+                <div class="detail-panel__send-avatar detail-panel__send-avatar--placeholder">
+                    <span class="material-symbols-outlined">person</span>
+                </div>
+                }
+                <span class="detail-panel__send-username">{{ profile.username }}</span>
+                <span class="detail-panel__send-action">
+                    @if (sendSending() === profile.uid) {
+                    <span class="spinner spinner--sm"></span>
+                    } @else if (sendSent() === profile.uid) {
+                    <span class="material-symbols-outlined" style="color:var(--app-accent)">check_circle</span>
+                    } @else {
+                    <span class="material-symbols-outlined">send</span>
+                    }
+                </span>
+            </div>
+            }
+        </div>
+        }
+    </div>
+    }
+    }
+</div>

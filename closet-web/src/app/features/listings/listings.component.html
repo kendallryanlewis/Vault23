@@ -1,0 +1,41 @@
+<div class="page">
+    <h2 class="page__title">Marketplace</h2>
+
+    <div class="chips">
+        <button class="chip" [class.chip--active]="filter() === 'all'" (click)="setFilter('all')">All</button>
+        <button class="chip" [class.chip--active]="filter() === 'sell'" (click)="setFilter('sell')">Sell</button>
+        <button class="chip" [class.chip--active]="filter() === 'trade'" (click)="setFilter('trade')">Trade</button>
+    </div>
+
+    @if (filtered().length === 0) {
+    <div class="empty-state">
+        <p>No listings yet.</p>
+    </div>
+    }
+
+    <div class="listing-grid">
+        @for (listing of filtered(); track listing.id) {
+        <div class="listing-card">
+            @if (listing.imageUrl) {
+            <div class="listing-card__img">
+                <img [src]="listing.imageUrl" [alt]="listing.sneakerName" loading="lazy" />
+            </div>
+            } @else {
+            <div class="listing-card__img listing-card__img--placeholder"></div>
+            }
+            <div class="listing-card__body">
+                <span class="badge" [class.badge--sell]="listing.type === 'sell'"
+                    [class.badge--trade]="listing.type === 'trade'">
+                    {{ listing.type }}
+                </span>
+                <p class="listing-card__name">{{ listing.sneakerName }}</p>
+                <p class="listing-card__meta">{{ listing.brand }} · Sz {{ listing.size }} · {{ listing.condition }}</p>
+                @if (listing.askingPrice) {
+                <p class="listing-card__price">\${{ listing.askingPrice }}</p>
+                }
+                <p class="listing-card__user">{{ listing.userDisplayName }}</p>
+            </div>
+        </div>
+        }
+    </div>
+</div>

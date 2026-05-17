@@ -1,0 +1,448 @@
+<div class="profile-page" [class.profile-page--scrolled]="scrolled()">
+
+    <!-- ── Sticky header ── -->
+    <div class="profile-page__sticky-header">
+
+        <!-- Hero (animates out when scrolled) -->
+        <div class="profile-page__hero" [style.background-image]="profileHeroBgUrl()"
+            [class.profile-page__hero--has-bg]="!!profileHeroBgUrl()">
+            <div class="profile-page__hero-overlay"
+                [class.profile-page__hero-overlay--active]="!!profileHeroBgUrl() && !isStoreBrand()"
+                [class.profile-page__hero-overlay--store]="!!profileHeroBgUrl() && isStoreBrand()"></div>
+            <div class="profile-page__topbar">
+                <a class="profile-page__settings-btn" routerLink="/app/profile/settings" aria-label="Settings">
+                    <span class="material-symbols-outlined">settings</span>
+                </a>
+            </div>
+            <div class="profile-page__header pb-4">
+                <div class="profile-page__header-identity">
+                    <div class="profile-page__avatar" (click)="viewOwnProfile()" style="cursor:pointer">
+                        <img [src]="user()?.photoURL || 'assets/default-avatar.svg'"
+                            [alt]="user()?.displayName ?? 'Profile'" />
+                    </div>
+                    <div class="profile-page__header-text">
+                        <h2 class="profile-page__name">{{ user()?.displayName ?? 'My Profile' }}</h2>
+                        <p class="profile-page__email">{{ user()?.email }}</p>
+                    </div>
+                </div>
+                @if (isStoreBrand()) {
+                <div class="profile-page__store-pill">
+                    <span class="material-symbols-outlined">storefront</span>
+                    Store Mode On
+                </div>
+                }
+                @if (bio()) {
+                <p class="profile-page__bio">{{ bio() }}</p>
+                }
+            </div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="profile-page__stats">
+            <div class="profile-page__stat">
+                <span class="profile-page__stat-value">{{ sneakers().length }}</span>
+                <span class="profile-page__stat-label">Closet</span>
+            </div>
+            <button class="profile-page__stat profile-page__stat--btn" (click)="goToFollowers()">
+                <span class="profile-page__stat-value">{{ followerCount() }}</span>
+                <span class="profile-page__stat-label">Followers</span>
+            </button>
+            <button class="profile-page__stat profile-page__stat--btn" (click)="goToFollowing()">
+                <span class="profile-page__stat-value">{{ followingCount() }}</span>
+                <span class="profile-page__stat-label">Following</span>
+            </button>
+            <button class="profile-page__stat profile-page__stat--btn" (click)="setTab('store')">
+                <span class="profile-page__stat-value">{{ listings().length }}</span>
+                <span class="profile-page__stat-label">For Sale</span>
+            </button>
+        </div>
+
+        <!-- Icon tab bar -->
+        <div class="profile-page__tab-bar pb-1">
+            <button class="profile-page__tab-btn" [class.profile-page__tab-btn--active]="tab() === 'closet'"
+                (click)="setTab('closet')" aria-label="Closet">
+                <span class="material-symbols-outlined">checkroom</span>
+            </button>
+            <button class="profile-page__tab-btn" [class.profile-page__tab-btn--active]="tab() === 'posts'"
+                (click)="setTab('posts')" aria-label="Posts">
+                <span class="material-symbols-outlined">photo_camera</span>
+            </button>
+            <button class="profile-page__tab-btn" [class.profile-page__tab-btn--active]="tab() === 'wishlist'"
+                (click)="setTab('wishlist')" aria-label="Wishlist">
+                <span class="material-symbols-outlined">favorite</span>
+            </button>
+            <button class="profile-page__tab-btn" [class.profile-page__tab-btn--active]="tab() === 'store'"
+                (click)="setTab('store')" aria-label="Store">
+                <span class="material-symbols-outlined">storefront</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Scrollable grid area ── -->
+    <div class="profile-page__scroll" #scrollEl>
+        <div class="profile-page__pane-track" [style.transform]="'translateX(calc(-' + tabIndex() + ' * 100vw))'">
+
+            <!-- Closet pane -->
+            <div class="profile-page__pane">
+                @if (sneakers().length === 0) {
+                <div class="profile-page__empty">
+                    <span class="material-symbols-outlined">checkroom</span>
+                    <p>No sneakers in your closet yet.</p>
+                </div>
+                } @else {
+                <div class="profile-page__grid">
+                    @for (s of sneakers(); track s.id; let i = $index) {
+                    <div class="profile-page__card" [style.grid-column]="'span ' + getColSpan(s.id)"
+                        [style.grid-row]="'span ' + getRowSpan(s.id)" (pointerdown)="onCardPointerDown(s, $event)"
+                        (pointerup)="onCardPointerUp(s, i)" (pointercancel)="onCardPointerCancel()"
+                        (pointermove)="onCardPointerMove($event)">
+                        <div class="profile-page__accent"></div>
+                        @if (hasListing(s.id)) {
+                        <span class="profile-page__for-sale-badge">For Sale</span>
+                        }
+                        @if (s.imageUrl) {
+                        <img class="profile-page__card-img" [src]="s.imageUrl" [alt]="s.name" loading="lazy" />
+                        } @else {
+                        <div class="profile-page__card-img profile-page__card-img--placeholder"></div>
+                        }
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <!-- Posts pane -->
+            <div class="profile-page__pane">
+                @if (posts().length === 0) {
+                <div class="profile-page__empty">
+                    <span class="material-symbols-outlined">photo_camera</span>
+                    <p>No camera posts yet.</p>
+                </div>
+                } @else {
+                <div class="profile-page__grid">
+                    @for (p of posts(); track p.id; let i = $index) {
+                    <div class="profile-page__card" [style.grid-column]="'span ' + getColSpan(p.id)"
+                        [style.grid-row]="'span ' + getRowSpan(p.id)" (pointerdown)="onPostCardPointerDown(p, $event)"
+                        (pointerup)="onPostCardPointerUp(p, i)" (pointercancel)="onCardPointerCancel()">
+                        @if (hasPostListing(p.id)) {
+                        <span class="profile-page__for-sale-badge">For Sale</span>
+                        }
+                        <img class="profile-page__card-img" [src]="p.imageUrl" [alt]="p.caption" loading="lazy" />
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <!-- Wishlist pane -->
+            <div class="profile-page__pane">
+                @if (wishlist().length === 0) {
+                <div class="profile-page__empty">
+                    <span class="material-symbols-outlined">favorite_border</span>
+                    <p>Like shoes in search to add them here.</p>
+                </div>
+                } @else {
+                <div class="profile-page__grid">
+                    @for (item of wishlist(); track item.id) {
+                    <div class="profile-page__card" (click)="openWishlistDetail(item)">
+                        <div class="profile-page__accent"></div>
+                        @if (item.imageUrl) {
+                        <img class="profile-page__card-img" [src]="item.imageUrl" [alt]="item.name" loading="lazy" />
+                        } @else {
+                        <div class="profile-page__card-img profile-page__card-img--placeholder"></div>
+                        }
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+            <!-- Store pane -->
+            <div class="profile-page__pane">
+                @if (listings().length === 0) {
+                <div class="profile-page__empty">
+                    <span class="material-symbols-outlined">storefront</span>
+                    <p>No active listings. Long-press a shoe in your closet or a post to list items for sale.</p>
+                </div>
+                } @else {
+                <div class="store-pane__list">
+                    @for (group of groupedListings(); track group.sneakerId) {
+                    <div class="store-pane__group">
+                        <div class="store-pane__group-header">
+                            <div class="store-pane__group-img-wrap">
+                                @if (group.imageUrl) {
+                                <img class="store-pane__group-img" [src]="group.imageUrl" [alt]="group.sneakerName"
+                                    loading="lazy" />
+                                } @else {
+                                <div class="store-pane__group-img store-pane__group-img--placeholder"></div>
+                                }
+                            </div>
+                            <div class="store-pane__group-info">
+                                <p class="store-pane__name">{{ group.sneakerName }}</p>
+                                <p class="store-pane__group-count">{{ group.items.length }} listing{{ group.items.length
+                                    !== 1 ? 's' : '' }}</p>
+                            </div>
+                        </div>
+                        <div class="store-pane__size-rows">
+                            @for (listing of group.items; track listing.id) {
+                            <div class="store-pane__size-row" (click)="openStoreListingSheet(listing)">
+                                <span class="store-pane__status-badge"
+                                    [class.store-pane__status-badge--sold]="listing.status === 'sold'"
+                                    [class.store-pane__status-badge--pending]="listing.status === 'pending'">
+                                    {{ listing.status }}
+                                </span>
+                                <span class="store-pane__size-label">Size {{ listing.size }}</span>
+                                <span class="store-pane__condition">{{ listing.condition }}</span>
+                                <div class="store-pane__price-row">
+                                    <span class="store-pane__price">${{ listing.askingPrice }}</span>
+                                    @if (listing.quantity > 1) {
+                                    <span class="store-pane__qty-badge">×{{ listing.quantity }}</span>
+                                    }
+                                </div>
+                                <span class="material-symbols-outlined store-pane__chevron">chevron_right</span>
+                            </div>
+                            }
+                        </div>
+                    </div>
+                    }
+                </div>
+                }
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ── Store listing management sheet ── -->
+@if (activeStoreListing(); as listing) {
+<div class="profile-ctx__backdrop" (click)="closeStoreListingSheet()"></div>
+<div class="store-mgmt-sheet">
+    <div class="profile-ctx__handle"></div>
+
+    <div class="store-mgmt-sheet__header">
+        @if (listing.imageUrl) {
+        <img class="store-mgmt-sheet__thumb" [src]="listing.imageUrl" [alt]="listing.sneakerName" />
+        }
+        <div class="store-mgmt-sheet__title-block">
+            <p class="store-mgmt-sheet__name">{{ listing.sneakerName }}</p>
+            <p class="store-mgmt-sheet__meta">Size {{ listing.size }} &bull; {{ listing.condition }}</p>
+            <p class="store-mgmt-sheet__price">${{ listing.askingPrice }}</p>
+        </div>
+    </div>
+
+    <!-- Status actions -->
+    <p class="store-mgmt-sheet__section-label">Mark as</p>
+    <div class="store-mgmt-sheet__status-row">
+        <button class="store-mgmt-sheet__status-btn"
+            [class.store-mgmt-sheet__status-btn--active]="listing.status === 'available'"
+            (click)="updateListingStatus(listing, 'available')">
+            <span class="material-symbols-outlined">sell</span>
+            Available
+        </button>
+        <button class="store-mgmt-sheet__status-btn"
+            [class.store-mgmt-sheet__status-btn--active]="listing.status === 'pending'"
+            (click)="updateListingStatus(listing, 'pending')">
+            <span class="material-symbols-outlined">schedule</span>
+            Pending
+        </button>
+        <button class="store-mgmt-sheet__status-btn"
+            [class.store-mgmt-sheet__status-btn--active]="listing.status === 'sold'"
+            (click)="updateListingStatus(listing, 'sold')">
+            <span class="material-symbols-outlined">check_circle</span>
+            Sold
+        </button>
+    </div>
+
+    <!-- Edit / Remove -->
+    <button class="profile-ctx__action" (click)="openListingSheetFromListing(listing)">
+        <span class="material-symbols-outlined">edit</span>
+        Edit listing
+    </button>
+
+    @if (confirmingDeleteListing()) {
+    <div class="profile-ctx__confirm">
+        <p class="profile-ctx__confirm-text">Remove this listing?</p>
+        <div class="profile-ctx__confirm-row">
+            <button class="profile-ctx__confirm-cancel" (click)="confirmingDeleteListing.set(false)">Cancel</button>
+            <button class="profile-ctx__confirm-delete" (click)="deleteStoreListing()">Remove</button>
+        </div>
+    </div>
+    } @else {
+    <button class="profile-ctx__action profile-ctx__action--danger" (click)="deleteStoreListing()">
+        <span class="material-symbols-outlined">delete</span>
+        Remove listing
+    </button>
+    }
+</div>
+}
+
+<!-- Context menu (long press) -->
+@if (contextMenuSneaker(); as shoe) {
+<div class="profile-ctx__backdrop" (click)="closeContextMenu()"></div>
+<div class="profile-ctx__sheet">
+    <div class="profile-ctx__handle"></div>
+    <p class="profile-ctx__title">{{ shoe.name }}</p>
+
+    <div class="profile-ctx__size-row">
+        <label class="profile-ctx__size-label">Size</label>
+        <input class="profile-ctx__size-input" type="text" placeholder="e.g. 10.5" [(ngModel)]="sizeDraft" />
+        <button class="profile-ctx__size-save" (click)="applySize()">Save</button>
+    </div>
+
+    <button class="profile-ctx__action" (click)="cycleContextMenuGridSize()">
+        <span class="material-symbols-outlined">aspect_ratio</span>
+        Resize Grid ({{ getGridSizeLabel(shoe.id) }})
+    </button>
+
+    <button class="profile-ctx__action" (click)="toggleDisplayItem(shoe)">
+        <span class="material-symbols-outlined">{{ isDisplayItem(shoe.id) ? 'home' : 'add_home' }}</span>
+        {{ isDisplayItem(shoe.id) ? 'Remove from Home' : 'Set as display item' }}
+    </button>
+
+    <button class="profile-ctx__action" (click)="openListingSheet(shoe)">
+        <span class="material-symbols-outlined">add_shopping_cart</span>
+        Add Size Listing
+    </button>
+
+    @if (listingCount(shoe.id) > 0) {
+    <button class="profile-ctx__action" (click)="goToStore(shoe)">
+        <span class="material-symbols-outlined">storefront</span>
+        Manage {{ listingCount(shoe.id) }} listing{{ listingCount(shoe.id) !== 1 ? 's' : '' }} →
+    </button>
+    }
+
+    @if (confirmingDelete()) {
+    <div class="profile-ctx__confirm">
+        <p class="profile-ctx__confirm-text">Remove from closet?</p>
+        <div class="profile-ctx__confirm-row">
+            <button class="profile-ctx__confirm-cancel" (click)="confirmingDelete.set(false)">Cancel</button>
+            <button class="profile-ctx__confirm-delete" (click)="deleteFromCloset()">Delete</button>
+        </div>
+    </div>
+    } @else {
+    <button class="profile-ctx__action profile-ctx__action--danger" (click)="deleteFromCloset()">
+        <span class="material-symbols-outlined">delete</span>
+        Delete
+    </button>
+    }
+</div>
+}
+
+<!-- Detail panel (closet item) -->
+<app-detail-panel [item]="selectedCatalogResult()" [selectedIndex]="selectedSneakerIndex()"
+    [catalogResultsLength]="sneakers().length" [slideAnimating]="slideAnimating()" [carouselDir]="carouselDir()"
+    (closed)="closeDetail()" (navigatedNext)="navigateDetailNext()" (navigatedPrev)="navigateDetailPrev()">
+</app-detail-panel>
+
+<!-- Post full-screen view -->
+@if (selectedPost() !== null) {
+<app-post-view [posts]="posts()" [startIndex]="selectedPostIndex()" [author]="myProfile()" (closed)="closePostView()"
+    (postDeleted)="closePostView()"></app-post-view>
+}
+
+<!-- Post resize sheet -->
+@if (postSheetPostId(); as pid) {
+<div class="profile-ctx__backdrop" (click)="closePostSheet()"></div>
+<div class="profile-ctx__sheet">
+    <div class="profile-ctx__handle"></div>
+    <p class="profile-ctx__title">Resize Post</p>
+    <div class="post-sheet__sizes">
+        <button class="post-sheet__size-btn" [class.post-sheet__size-btn--active]="getGridSizeLabel(pid) === '1x1'"
+            (click)="setPostGridSize('1x1')">
+            <div class="post-sheet__size-icon post-sheet__size-icon--1x1"></div>
+            <span>Small</span>
+        </button>
+        <button class="post-sheet__size-btn" [class.post-sheet__size-btn--active]="getGridSizeLabel(pid) === '2x1'"
+            (click)="setPostGridSize('2x1')">
+            <div class="post-sheet__size-icon post-sheet__size-icon--2x1"></div>
+            <span>Wide</span>
+        </button>
+        <button class="post-sheet__size-btn" [class.post-sheet__size-btn--active]="getGridSizeLabel(pid) === '2x2'"
+            (click)="setPostGridSize('2x2')">
+            <div class="post-sheet__size-icon post-sheet__size-icon--2x2"></div>
+            <span>Large</span>
+        </button>
+    </div>
+    <button class="profile-ctx__action" (click)="togglePostDisplayItem()">
+        <span class="material-symbols-outlined">{{ isPostDisplayItem(pid) ? 'home' : 'add_home' }}</span>
+        {{ isPostDisplayItem(pid) ? 'Remove from Home' : 'Set as display item' }}
+    </button>
+    @if (postSheetPost(); as post) {
+    @if (hasPostListing(post.id)) {
+    <button class="profile-ctx__action profile-ctx__action--warn" (click)="removePostListing(post)">
+        <span class="material-symbols-outlined">remove_shopping_cart</span>
+        Remove Listing
+    </button>
+    } @else {
+    <button class="profile-ctx__action" (click)="openPostListingSheet(post)">
+        <span class="material-symbols-outlined">storefront</span>
+        List for Sale
+    </button>
+    }
+    }
+</div>
+}
+
+<!-- Listing sheet -->
+@if (listingSheetSneaker(); as shoe) {
+<div class="profile-ctx__backdrop" (click)="closeListingSheet()"></div>
+<div class="profile-ctx__sheet listing-sheet">
+    <div class="profile-ctx__handle"></div>
+    <p class="profile-ctx__title">{{ editingListingId() ? 'Edit Listing' : 'Add Size Listing' }}</p>
+    <p class="listing-sheet__shoe-name">{{ shoe.name }}</p>
+
+    <!-- Size + Price side by side -->
+    <div class="listing-sheet__row">
+        <div class="listing-sheet__field listing-sheet__field--half">
+            <label class="listing-sheet__label">Size</label>
+            <input class="listing-sheet__input" type="text" [ngModel]="listingSize()"
+                (ngModelChange)="listingSize.set($event)" placeholder="e.g. 10.5" />
+        </div>
+        <div class="listing-sheet__field listing-sheet__field--half">
+            <label class="listing-sheet__label">Price ($)</label>
+            <input class="listing-sheet__input" type="number" min="0" [ngModel]="listingPrice()"
+                (ngModelChange)="listingPrice.set($event)" placeholder="0" />
+        </div>
+    </div>
+
+    <!-- Quantity stepper -->
+    <div class="listing-sheet__field">
+        <label class="listing-sheet__label">Quantity</label>
+        <div class="listing-sheet__qty">
+            <button class="listing-sheet__qty-btn"
+                (click)="listingQuantity.set(listingQuantity() > 1 ? listingQuantity() - 1 : 1)"
+                [disabled]="listingQuantity() <= 1">−</button>
+            <span class="listing-sheet__qty-value">{{ listingQuantity() }}</span>
+            <button class="listing-sheet__qty-btn" (click)="listingQuantity.set(listingQuantity() + 1)">+</button>
+        </div>
+    </div>
+
+    <div class="listing-sheet__field">
+        <label class="listing-sheet__label">Condition</label>
+        <div class="listing-sheet__conditions">
+            @for (cond of ['DS', 'VNDS', 'Used']; track cond) {
+            <button class="listing-sheet__cond-btn"
+                [class.listing-sheet__cond-btn--active]="listingCondition() === cond"
+                (click)="listingCondition.set($any(cond))">{{ cond }}</button>
+            }
+        </div>
+    </div>
+
+    <div class="listing-sheet__field">
+        <label class="listing-sheet__label">Notes</label>
+        <textarea class="listing-sheet__textarea" [ngModel]="listingNotes()" (ngModelChange)="listingNotes.set($event)"
+            placeholder="Condition details, trades, etc." rows="2" maxlength="300"></textarea>
+    </div>
+
+    <div class="listing-sheet__field">
+        <label class="listing-sheet__label">Size</label>
+        <input class="listing-sheet__input" type="text" [ngModel]="listingSize()"
+            (ngModelChange)="listingSize.set($event)" placeholder="e.g. 10.5" />
+    </div>
+
+    <button class="listing-sheet__save-btn" (click)="saveListing()" [disabled]="listingSaving()">
+        @if (listingSaving()) { Saving… } @else { {{ editingListingId() ? 'Update Listing' : 'Publish Listing' }} }
+    </button>
+</div>
+}

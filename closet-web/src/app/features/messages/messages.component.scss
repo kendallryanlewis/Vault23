@@ -1,0 +1,605 @@
+:host {
+    display: flex;
+    flex-direction: column;
+    height: calc(100% + env(safe-area-inset-top));
+    margin-top: calc(-1 * env(safe-area-inset-top));
+    overflow: hidden;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+}
+
+.messages-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.messages-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: calc(env(safe-area-inset-top) + 16px) 20px 12px;
+    flex-shrink: 0;
+
+    &__title {
+        font-size: 20px;
+        line-height: 1;
+    }
+
+    &__logo {
+        font-weight: 800;
+        letter-spacing: -0.3px;
+        color: var(--text-primary);
+    }
+
+    &__tag {
+        font-weight: 200;
+        color: var(--text-primary);
+        margin-left: 4px;
+    }
+
+    &__compose {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: none;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background 0.2s;
+
+        .material-symbols-outlined {
+            font-size: 22px;
+        }
+
+        &:active {
+            background: var(--border);
+        }
+    }
+}
+
+// ── Filter pills ──────────────────────────────────────────────────────────────
+.messages-filters {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px 12px;
+    flex-shrink: 0;
+
+    &__pill {
+        height: 32px;
+        padding: 0 16px;
+        border-radius: 16px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+
+        &--active {
+            background: var(--app-accent);
+            border-color: var(--app-accent);
+            color: #fff;
+        }
+    }
+}
+
+// ── List ──────────────────────────────────────────────────────────────────────
+.messages-list {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.messages-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 80px 32px;
+    text-align: center;
+    color: var(--text-muted);
+
+    &__icon {
+        font-size: 48px;
+        opacity: 0.4;
+        margin-bottom: 4px;
+    }
+
+    p {
+        margin: 0;
+        font-size: 17px;
+        font-weight: 600;
+    }
+
+    &__sub {
+        font-size: 14px;
+        font-weight: 400 !important;
+        opacity: 0.7;
+    }
+}
+
+// ── Chat row ──────────────────────────────────────────────────────────────────
+.chat-row-wrap {
+    position: relative;
+    overflow: hidden;
+}
+
+.chat-row-delete {
+    position: absolute;
+    inset: 0 0 0 auto;
+    width: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #ef4444;
+    visibility: hidden;
+
+    .is-swiped>& {
+        visibility: visible;
+    }
+
+    &__btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: none;
+        border: none;
+        color: #fff;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+
+        .material-symbols-outlined {
+            font-size: 22px;
+        }
+    }
+}
+
+.chat-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    width: 100%;
+    padding: 14px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: transform 0.25s ease, background 0.15s;
+    text-decoration: none;
+
+    &:active {
+        background: var(--bg-secondary);
+    }
+
+    &--swiped {
+        transform: translateX(-80px);
+    }
+
+    &--unread .chat-row__name {
+        font-weight: 800;
+    }
+
+    &--unread .chat-row__preview {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+
+    &__avatar {
+        position: relative;
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        overflow: visible;
+        flex-shrink: 0;
+
+        img,
+        span {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        img {
+            object-fit: cover;
+            display: block;
+        }
+
+        span {
+            background: var(--app-accent);
+            color: #fff;
+            font-size: 18px;
+            font-weight: 700;
+        }
+    }
+
+    &__unread-dot {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: var(--app-accent);
+        border: 2px solid var(--bg-primary);
+    }
+
+    &__body {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    &__top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    &__name {
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__time {
+        font-size: 12px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+    }
+
+    &__preview {
+        font-size: 14px;
+        color: var(--text-muted);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    &__chevron {
+        font-size: 18px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+        opacity: 0.5;
+    }
+}
+
+// ── Compose overlay ───────────────────────────────────────────────────────────
+.compose-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 300;
+    display: flex;
+    align-items: flex-end;
+}
+
+.compose-sheet {
+    width: 100%;
+    max-height: 75dvh;
+    background: var(--bg-primary);
+    --bg-primary: #f7f7f7;
+
+    :host-context([data-theme="dark"]) & {
+        --bg-primary: #2C2C2E;
+    }
+
+    border-radius: 24px 24px 0 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    padding-bottom: env(safe-area-inset-bottom);
+
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 20px 20px 12px;
+        flex-shrink: 0;
+    }
+
+    &__title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    &__close {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: none;
+        background: var(--bg-secondary);
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        &:active {
+            opacity: 0.6;
+        }
+    }
+
+    &__search-wrap {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin: 0 20px 12px;
+        padding: 0 14px;
+        height: 44px;
+        background: var(--bg-secondary);
+        border-radius: 22px;
+        flex-shrink: 0;
+    }
+
+    &__search-icon {
+        font-size: 20px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+    }
+
+    &__search-input {
+        flex: 1;
+        border: none;
+        background: transparent;
+        color: var(--text-primary);
+        font-size: 15px;
+        outline: none;
+
+        &::placeholder {
+            color: var(--text-muted);
+        }
+    }
+
+    &__results {
+        flex: 1;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    &__hint {
+        padding: 24px 20px;
+        font-size: 14px;
+        color: var(--text-muted);
+        text-align: center;
+    }
+}
+
+// ── Compose user row ──────────────────────────────────────────────────────────
+.compose-user-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.15s;
+
+    &:active {
+        background: var(--bg-secondary);
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: default;
+    }
+
+    &__avatar {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+
+        img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        span {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--app-accent);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+        }
+    }
+
+    &__name {
+        flex: 1;
+        font-size: 16px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    &__chevron {
+        font-size: 18px;
+        color: var(--text-muted);
+        opacity: 0.5;
+    }
+
+    &--selected {
+        background: var(--bg-secondary);
+
+        .compose-user-row__chevron {
+            color: var(--app-accent);
+            opacity: 1;
+        }
+    }
+}
+
+// ── Group avatar ───────────────────────────────────────────────────────────────
+.chat-row__avatar--group {
+    background: var(--bg-secondary) !important;
+
+    &,
+    span {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .material-symbols-outlined {
+        font-size: 26px;
+        color: var(--text-muted);
+    }
+}
+
+// ── Compose mode toggle ────────────────────────────────────────────────────────
+.compose-mode-toggle {
+    display: flex;
+    gap: 8px;
+    padding: 0 20px 12px;
+    flex-shrink: 0;
+
+    &__btn {
+        flex: 1;
+        height: 36px;
+        border-radius: 18px;
+        border: 1.5px solid var(--border);
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.18s;
+
+        &--active {
+            background: var(--app-accent);
+            border-color: var(--app-accent);
+            color: #fff;
+        }
+    }
+}
+
+// ── Group name input ───────────────────────────────────────────────────────────
+.compose-sheet__group-name-wrap {
+    padding: 0 20px 12px;
+    flex-shrink: 0;
+}
+
+.compose-sheet__group-name-input {
+    width: 100%;
+    height: 44px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 15px;
+    padding: 0 16px;
+    outline: none;
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+
+    &:focus {
+        border-color: var(--app-accent);
+    }
+}
+
+// ── Selected users chips ───────────────────────────────────────────────────────
+.compose-selected-users {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 0 20px 12px;
+    flex-shrink: 0;
+}
+
+.compose-chip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    height: 30px;
+    padding: 0 10px 0 12px;
+    border-radius: 15px;
+    background: var(--app-accent);
+    color: #fff;
+
+    &__name {
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    &__remove {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        border: none;
+        background: rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        color: #fff;
+        cursor: pointer;
+        padding: 0;
+
+        .material-symbols-outlined {
+            font-size: 12px;
+        }
+    }
+}
+
+// ── Create group button ────────────────────────────────────────────────────────
+.compose-sheet__create-group-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    margin: 0 20px 12px;
+    border-radius: 12px;
+    border: none;
+    background: var(--app-accent);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.18s;
+    flex-shrink: 0;
+
+    &:disabled {
+        opacity: 0.4;
+        cursor: default;
+    }
+
+    .spinner {
+        width: 18px;
+        height: 18px;
+        border-width: 2px;
+        border-color: rgba(255, 255, 255, 0.4);
+        border-top-color: #fff;
+    }
+}

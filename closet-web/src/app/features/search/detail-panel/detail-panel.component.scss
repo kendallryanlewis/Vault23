@@ -1,0 +1,989 @@
+.spinner {
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border);
+    border-top-color: var(--text-primary);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shoeEnter {
+    from {
+        transform: scale(0.72) rotate(-22deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1) rotate(-8deg);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutLeft {
+    to {
+        transform: translateX(-120%) rotate(-8deg);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(120%) rotate(-8deg);
+        opacity: 0;
+    }
+}
+
+@keyframes slideOutRight {
+    to {
+        transform: translateX(120%) rotate(-8deg);
+        opacity: 0;
+    }
+}
+
+@keyframes slideInLeft {
+    from {
+        transform: translateX(-120%) rotate(-8deg);
+        opacity: 0;
+    }
+}
+
+@keyframes contentSlideOutLeft {
+    to {
+        transform: translateX(-48px);
+        opacity: 0;
+    }
+}
+
+@keyframes contentSlideInRight {
+    from {
+        transform: translateX(48px);
+        opacity: 0;
+    }
+}
+
+@keyframes contentSlideOutRight {
+    to {
+        transform: translateX(48px);
+        opacity: 0;
+    }
+}
+
+@keyframes contentSlideInLeft {
+    from {
+        transform: translateX(-48px);
+        opacity: 0;
+    }
+}
+
+.detail-panel {
+    position: fixed;
+    inset: 0;
+    z-index: 200;
+    background: var(--bg-primary);
+    // Ensure panel is always fully opaque even when a background image
+    // overrides --bg-primary to a semi-transparent value.
+    --bg-primary: #f7f7f7;
+
+    :host-context([data-theme="dark"]) & {
+        --bg-primary: #2C2C2E;
+    }
+
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    // Promote to its own GPU compositor layer so WKWebView can resolve the
+    // scroll hit-test without a round-trip to the renderer process.
+    will-change: transform;
+    transform: translateY(100%);
+    transition: transform 0.48s cubic-bezier(0.25, 1.0, 0.4, 1.0);
+
+    // Override Bootstrap px-4 to respect horizontal safe areas (notch/island)
+    padding-left: calc(1.5rem + env(safe-area-inset-left, 0px)) !important;
+    padding-right: calc(1.5rem + env(safe-area-inset-right, 0px)) !important;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+
+    &--open {
+        transform: translateY(0);
+    }
+
+    // ── Slide helpers ─────────────────────────────────────────────────────────
+    &__slide {
+        &--out-left {
+            animation: contentSlideOutLeft 0.22s ease-in forwards;
+        }
+
+        &--out-right {
+            animation: contentSlideOutRight 0.22s ease-in forwards;
+        }
+
+        &--in-right {
+            animation: contentSlideInRight 0.4s cubic-bezier(0.25, 1.0, 0.4, 1.0) forwards;
+        }
+
+        &--in-left {
+            animation: contentSlideInLeft 0.4s cubic-bezier(0.25, 1.0, 0.4, 1.0) forwards;
+        }
+    }
+
+    // ── Top bar ───────────────────────────────────────────────────────────────
+
+    &__topbar {
+        background: var(--bg-primary);
+    }
+
+    &__topbar-logo {
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: -0.5px;
+        color: var(--text-primary);
+    }
+
+    &__topbar-brand-logo-wrap {
+        display: block;
+        width: 52px;
+        height: 24px;
+    }
+
+    &__topbar-brand-logo {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: left center;
+    }
+
+    &__back-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        background: rgba(0, 0, 0, 0.08);
+        cursor: pointer;
+        transition: background 0.18s;
+        flex-shrink: 0;
+
+        &:active {
+            background: rgba(0, 0, 0, 0.16);
+        }
+    }
+
+    &__back-btn-inner {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #000;
+
+        .material-symbols-outlined {
+            font-size: 15px;
+            color: #fff;
+        }
+    }
+
+    &__topbar-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        color: var(--text-primary);
+        transition: background 0.18s, color 0.18s;
+
+        .material-symbols-outlined {
+            font-size: 22px;
+        }
+
+        &:active {
+            background: var(--border);
+        }
+
+        &--liked {
+            color: #ff453a;
+        }
+    }
+
+    // ── Sticky header: holds topbar + title + hero ──────────────────────────
+    &__sticky-header {
+        padding-top: env(safe-area-inset-top, 0px);
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: linear-gradient(179deg, var(--bg-primary), var(--bg-primary), var(--bg-primary), var(--bg-primary), transparent);
+    }
+
+    // ── Title section ─────────────────────────────────────────────────────────
+    &__title-section {
+        flex-shrink: 0;
+    }
+
+    // ── Hero wrap: positions brand-vert independently of the scaled hero ───────
+    &__hero-wrap {
+        position: relative;
+        // Cancel the panel's safe-area-inset-right padding so the decorative
+        // hero/brand-vert bleeds to the right viewport edge as intended.
+        // Interactive sections (topbar, title, body) above/below still respect
+        // the safe area via the panel-level padding.
+        margin-right: calc(-1 * env(safe-area-inset-right, 0px));
+    }
+
+    // ── Hero: accent + shoe scale toward top-right ────────────────────────────
+    &__hero {
+        transform: scale(calc(1 - var(--scroll-ratio, 0) * 0.3));
+        transform-origin: top left;
+        will-change: transform;
+    }
+
+    &__name {
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1.2;
+        color: var(--text-primary);
+        margin: 0 0 3px;
+    }
+
+    &__brand-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        margin: 0;
+    }
+
+    // ── Visual section ────────────────────────────────────────────────────────
+    &__visual {
+        height: 30dvh;
+        min-height: 200px;
+        flex-shrink: 0;
+        overflow: visible;
+    }
+
+    &__visual-accent {
+        height: 300px;
+        background:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.14) 0%, rgba(0, 0, 0, 0.24) 100%),
+            var(--app-accent, #f97316);
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+
+        .insider-accent {
+            overflow: hidden;
+
+            &::after {
+                content: '';
+                position: absolute;
+                inset: 12%;
+                background-image: radial-gradient(circle, rgba(255, 255, 255, 0.468) 1.5px, rgba(255, 255, 255, 0) 1.5px);
+                background-size: 5% 4%;
+                border-radius: inherit;
+                pointer-events: none;
+                mask-image: linear-gradient(to bottom, black 50%, black 50%, transparent 100%);
+                -webkit-mask-image: linear-gradient(to bottom, black 50%, black 50%, transparent 100%);
+            }
+        }
+    }
+
+    &__visual-side {
+        overflow: visible;
+        position: relative;
+        pointer-events: none;
+    }
+
+    &__visual-dots {
+        bottom: 16px;
+        right: 12px;
+        width: 45px;
+        height: calc(75px * (1 - var(--scroll-ratio, 0)));
+        margin-bottom: calc(1.5rem * (1 - var(--scroll-ratio, 0)));
+        background-image: radial-gradient(circle, var(--app-accent) 1px, rgba(0, 0, 0, 0) 2px);
+        background-size: 15px 15px;
+        opacity: calc(1 - var(--scroll-ratio, 0) * 5);
+        overflow: hidden;
+        will-change: height, opacity;
+
+        :host-context([data-theme="dark"]) & {
+            background-image: radial-gradient(circle, #ffffff 1px, rgba(255, 255, 255, 0) 2px);
+        }
+    }
+
+    &__brand-vert {
+        font-size: clamp(3rem, 30dvh, 7rem);
+        font-stretch: ultra-condensed;
+        line-height: 1;
+        font-weight: 900;
+        text-transform: uppercase;
+        color: rgba(0, 0, 0, 0.09);
+        white-space: nowrap;
+        pointer-events: none;
+        -webkit-user-select: none;
+        user-select: none;
+        transform: rotate(180deg) scale(calc(1 - var(--scroll-ratio, 0) * 0.3));
+        transform-origin: center;
+        z-index: 1;
+        writing-mode: vertical-lr;
+        will-change: transform;
+        opacity: calc(1 - var(--scroll-ratio, 0) * 5);
+
+        :host-context([data-theme="dark"]) & {
+            color: rgba(255, 255, 255, 0.13);
+        }
+    }
+
+    &__resale-peek {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        pointer-events: none;
+        user-select: none;
+        opacity: min(1, calc(var(--scroll-ratio, 0) * 5 - 0.5));
+        will-change: opacity;
+    }
+
+    &__resale-peek-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2px;
+    }
+
+    &__resale-peek-price {
+        font-size: 14px;
+        font-weight: 900;
+        color: var(--text-primary);
+        line-height: 1;
+    }
+
+    &__resale-peek-label {
+        font-size: 7px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--text-muted);
+    }
+
+    // Shoe wrapper — centers shoe over the visual block
+    &__shoe-wrap {
+        pointer-events: none;
+        z-index: 2;
+        overflow: visible;
+    }
+
+    // Shoe image
+    &__shoe {
+        width: 100vw;
+        object-fit: contain;
+        display: block;
+        z-index: 1;
+        pointer-events: none;
+        filter: drop-shadow(0 20px 18px rgba(0, 0, 0, 0.38));
+        transform: rotate(36deg) scale(1);
+        animation: shoeEnter 0.55s cubic-bezier(0.25, 1.0, 0.4, 1.0) forwards;
+
+        &--slide-out-left {
+            animation: slideOutLeft 0.22s ease-in forwards;
+        }
+
+        &--slide-out-right {
+            animation: slideOutRight 0.22s ease-in forwards;
+        }
+
+        &--slide-in-right {
+            animation: slideInRight 0.5s cubic-bezier(0.25, 1.0, 0.4, 1.0) forwards;
+        }
+
+        &--slide-in-left {
+            animation: slideInLeft 0.5s cubic-bezier(0.25, 1.0, 0.4, 1.0) forwards;
+        }
+    }
+
+    &__nav-next {
+        position: absolute;
+        right: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 56px;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        color: var(--text-primary);
+        background: var(--bg-secondary);
+        border-radius: 12px 0 0 12px;
+        box-shadow: -2px 0 12px rgba(0, 0, 0, 0.08);
+        transition: background 0.18s;
+
+        &:active {
+            background: var(--border);
+        }
+    }
+
+    // ── Resale prices ─────────────────────────────────────────────────────────
+    &__section {
+        margin-top: 4px;
+    }
+
+    &__section-label {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--text-muted);
+        margin: 0 0 10px;
+    }
+
+    &__resale-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    &__resale-card {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: var(--bg-secondary);
+        text-decoration: none;
+
+        &--linked {
+            cursor: pointer;
+            transition: opacity 0.15s;
+
+            &:active {
+                opacity: 0.7;
+            }
+        }
+    }
+
+    &__resale-price {
+        font-size: 18px;
+        font-weight: 900;
+        color: var(--text-primary);
+        line-height: 1;
+    }
+
+    &__resale-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+    }
+
+    // ── Meta row (release date, style ID) ─────────────────────────────────────
+    &__meta-row {
+        padding-top: 4px;
+    }
+
+    &__meta-item {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+    }
+
+    &__meta-label {
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+    }
+
+    &__meta-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    // ── Market chip grid ──────────────────────────────────────────────────────
+    &__chip-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    &__chip {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: var(--bg-secondary);
+    }
+
+    &__chip-value {
+        font-size: 18px;
+        font-weight: 900;
+        color: var(--text-primary);
+        line-height: 1;
+    }
+
+    &__chip-label {
+        font-size: 10px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+    }
+
+    // ── Detail list (key / value rows) ────────────────────────────────────────
+    &__detail-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg-secondary);
+    }
+
+    &__detail-row {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+
+        &:last-child {
+            border-bottom: none;
+        }
+    }
+
+    &__detail-row-label {
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+    }
+
+    &__detail-row-value {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+        text-align: right;
+    }
+
+    // ── Per-size price cards ──────────────────────────────────────────────────
+    &__size-cards {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &__size-card {
+        flex-shrink: 0;
+        width: 72px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 12px 8px 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+    }
+
+    &__size-card-num {
+        font-size: 15px;
+        font-weight: 900;
+        color: var(--text-primary);
+        line-height: 1;
+    }
+
+    &__size-card-prices {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+    }
+
+    &__size-card-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    &__size-card-platform {
+        font-size: 9px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        color: var(--text-muted);
+    }
+
+    &__size-card-price {
+        font-size: 10px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    // ── Available sizes (fallback) ─────────────────────────────────────────────
+    &__size-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    &__size-chip {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 52px;
+        height: 42px;
+        padding: 0 10px;
+        border-radius: 12px;
+        background: var(--bg-secondary);
+        border: 1px solid var(--border);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--text-primary);
+        letter-spacing: 0.2px;
+    }
+
+    // ── Buy links ─────────────────────────────────────────────────────────────
+    &__buy-links {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    &__buy-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 10px 22px;
+        border-radius: 20px;
+        background: var(--text-primary);
+        color: var(--bg-primary);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-decoration: none;
+        transition: opacity 0.15s;
+
+        &:active {
+            opacity: 0.7;
+        }
+    }
+
+    // ── Body (scrollable) ─────────────────────────────────────────────────────
+    &__body-scroll {
+        flex: 1;
+        overflow-y: auto;
+        scrollbar-width: none;
+
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+
+    &__price {
+        font-size: 36px;
+        font-weight: 900;
+        color: var(--text-primary);
+        line-height: 1;
+    }
+
+    &__price-retail {
+        font-size: 16px;
+        color: var(--text-muted);
+        text-decoration: line-through;
+    }
+
+    &__brand-sub {
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1.2px;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    &__description {
+        font-size: 13px;
+        line-height: 1.65;
+        color: var(--text-secondary);
+        margin-top: 2px;
+    }
+
+    // ── CTAs ─────────────────────────────────────────────────────────────────
+    &__cta-row {
+        position: sticky;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: var(--bg-primary);
+        z-index: 11;
+        max-height: 200px;
+        overflow: hidden;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        transition: max-height 0.28s cubic-bezier(0.4, 0, 0.6, 1),
+            opacity 0.28s ease,
+            transform 0.28s cubic-bezier(0.4, 0, 0.6, 1);
+
+        &--hidden {
+            max-height: 0;
+            transform: translateY(100%);
+            opacity: 0;
+            pointer-events: none;
+        }
+    }
+
+    &__cta {
+        padding: 15px 10px;
+        border-radius: 14px;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: opacity 0.18s;
+
+        &--muted {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        &--primary {
+            background: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        &--disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        &--success {
+            background: var(--app-accent);
+            color: #fff;
+        }
+    }
+}
+
+// ── Image grid overlay ────────────────────────────────────────────────────────
+.detail-panel__img-grid-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.detail-panel__img-grid-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-panel__img-grid-close {
+    position: absolute;
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    right: 16px;
+    z-index: 201;
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+
+    .material-symbols-outlined {
+        font-size: 22px;
+    }
+}
+
+.detail-panel__img-grid-scroll {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 4px;
+    padding: calc(72px + env(safe-area-inset-top, 0px)) 4px calc(24px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    height: 100%;
+}
+
+.detail-panel__img-grid-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 8px;
+}
+
+.detail-panel__img-grid-empty {
+    color: rgba(255, 255, 255, 0.5);
+    grid-column: 1 / -1;
+    text-align: center;
+    margin-top: 40px;
+    font-size: 14px;
+}
+
+// ── Send-to-user panel ────────────────────────────────────────────────────────
+.detail-panel__send-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 190;
+}
+
+.detail-panel__send-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 191;
+    background: var(--bg-primary);
+    border-radius: 20px 20px 0 0;
+    padding: 12px 20px calc(28px + env(safe-area-inset-bottom, 0px));
+    animation: sendPanelSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes sendPanelSlideUp {
+    from {
+        transform: translateY(100%);
+    }
+
+    to {
+        transform: translateY(0);
+    }
+}
+
+.detail-panel__send-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--text-muted);
+    border-radius: 2px;
+    margin: 0 auto 16px;
+    opacity: 0.3;
+}
+
+.detail-panel__send-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0 0 14px;
+}
+
+.detail-panel__send-search {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 12px;
+}
+
+.detail-panel__send-search-icon {
+    font-size: 18px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+}
+
+.detail-panel__send-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    color: var(--text-primary);
+
+    &::placeholder {
+        color: var(--text-muted);
+    }
+}
+
+.detail-panel__send-results {
+    max-height: 260px;
+    overflow-y: auto;
+}
+
+.detail-panel__send-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    cursor: pointer;
+
+    &:not(:last-child) {
+        border-bottom: 1px solid var(--border-subtle, rgba(0, 0, 0, 0.06));
+    }
+}
+
+.detail-panel__send-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+
+    &--placeholder {
+        background: var(--bg-secondary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+
+        .material-symbols-outlined {
+            font-size: 20px;
+        }
+    }
+}
+
+.detail-panel__send-username {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.detail-panel__send-action {
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+
+    .material-symbols-outlined {
+        font-size: 20px;
+    }
+}
+
+.spinner--sm {
+    width: 18px;
+    height: 18px;
+    border-width: 2px;
+}

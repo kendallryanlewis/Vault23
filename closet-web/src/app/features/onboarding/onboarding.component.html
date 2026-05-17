@@ -1,0 +1,145 @@
+<div class="onboarding-overlay">
+    <div class="onboarding-sheet">
+
+        <!-- Progress dots -->
+        <div class="onboarding-dots">
+            @for (step of steps; track step.id) {
+            <div class="onboarding-dots__dot" [class.onboarding-dots__dot--active]="currentStep() === step.id"></div>
+            }
+        </div>
+
+        <!-- Step 0 — Welcome -->
+        @if (currentStep() === 0) {
+        <div class="onboarding-step">
+            <div class="onboarding-step__brand">
+                <span class="onboarding-step__brand-v">VAULT</span><span
+                    class="onboarding-step__brand-pipe">|</span><span class="onboarding-step__brand-n">23</span>
+            </div>
+            <h1 class="onboarding-step__title">{{ steps[0].title }}</h1>
+            <p class="onboarding-step__subtitle">{{ steps[0].subtitle }}</p>
+            <p class="onboarding-step__body">
+                Catalog your sneaker collection, track drops, discover releases, and connect with the culture.
+                Let's get you set up in a few steps.
+            </p>
+            <button class="onboarding-btn onboarding-btn--primary" (click)="next()">Get Started</button>
+        </div>
+        }
+
+        <!-- Step 1 — Profile Photo -->
+        @if (currentStep() === 1) {
+        <div class="onboarding-step">
+            <h1 class="onboarding-step__title">{{ steps[1].title }}</h1>
+            <p class="onboarding-step__subtitle">{{ steps[1].subtitle }}</p>
+
+            <label class="onboarding-avatar" for="onboarding-avatar-input">
+                @if (photoPreview() || photoURL) {
+                <img [src]="photoPreview() ?? photoURL" alt="Your photo" class="onboarding-avatar__img" />
+                } @else {
+                <div class="onboarding-avatar__placeholder">
+                    <span class="material-symbols-outlined">add_a_photo</span>
+                </div>
+                }
+                @if (uploading()) {
+                <div class="onboarding-avatar__uploading">
+                    <span class="onboarding-spinner"></span>
+                </div>
+                }
+            </label>
+            <input id="onboarding-avatar-input" type="file" accept="image/*" style="display:none"
+                (change)="onAvatarChange($event)" />
+
+            @if (error()) {
+            <p class="onboarding-error">{{ error() }}</p>
+            }
+
+            <div class="onboarding-step__actions">
+                <button class="onboarding-btn onboarding-btn--primary" [disabled]="uploading()" (click)="next()">
+                    {{ (photoPreview() || photoURL) ? 'Continue' : 'Skip for now' }}
+                </button>
+            </div>
+        </div>
+        }
+
+        <!-- Step 2 — Shoe Size -->
+        @if (currentStep() === 2) {
+        <div class="onboarding-step">
+            <h1 class="onboarding-step__title">{{ steps[2].title }}</h1>
+            <p class="onboarding-step__subtitle">{{ steps[2].subtitle }}</p>
+
+            <div class="onboarding-field">
+                <label class="onboarding-field__label">US Men's Size</label>
+                <input class="onboarding-field__input" type="number" step="0.5" min="4" max="20" placeholder="e.g. 10.5"
+                    [ngModel]="shoeSize()" (ngModelChange)="shoeSize.set($event)" autocomplete="off"
+                    inputmode="decimal" />
+            </div>
+
+            <div class="onboarding-step__actions">
+                <button class="onboarding-btn onboarding-btn--primary" [disabled]="saving()"
+                    (click)="saveShoeSizeAndContinue()">
+                    {{ saving() ? 'Saving…' : (shoeSize().trim() ? 'Continue' : 'Skip for now') }}
+                </button>
+            </div>
+        </div>
+        }
+
+        <!-- Step 3 — How It Works -->
+        @if (currentStep() === 3) {
+        <div class="onboarding-step">
+            <h1 class="onboarding-step__title">{{ steps[3].title }}</h1>
+            <p class="onboarding-step__subtitle">{{ steps[3].subtitle }}</p>
+
+            <ul class="onboarding-features">
+                <li class="onboarding-features__item">
+                    <span class="material-symbols-outlined onboarding-features__icon">home</span>
+                    <div class="onboarding-features__text">
+                        <strong>Home Feed</strong>
+                        <span>Browse your closet and community posts.</span>
+                    </div>
+                </li>
+                <li class="onboarding-features__item">
+                    <span class="material-symbols-outlined onboarding-features__icon">search</span>
+                    <div class="onboarding-features__text">
+                        <strong>Search</strong>
+                        <span>Find any sneaker and add it to your closet.</span>
+                    </div>
+                </li>
+                <li class="onboarding-features__item">
+                    <span class="material-symbols-outlined onboarding-features__icon">photo_camera</span>
+                    <div class="onboarding-features__text">
+                        <strong>Camera</strong>
+                        <span>Post photos of your collection to the feed.</span>
+                    </div>
+                </li>
+                <li class="onboarding-features__item">
+                    <span class="material-symbols-outlined onboarding-features__icon">local_fire_department</span>
+                    <div class="onboarding-features__text">
+                        <strong>Drops</strong>
+                        <span>Track upcoming releases and never miss a drop.</span>
+                    </div>
+                </li>
+            </ul>
+
+            <button class="onboarding-btn onboarding-btn--primary" (click)="next()">Next</button>
+        </div>
+        }
+
+        <!-- Step 4 — Done -->
+        @if (currentStep() === 4) {
+        <div class="onboarding-step onboarding-step--final">
+            <div class="onboarding-step__brand">
+                <span class="onboarding-step__brand-v">VAULT</span><span
+                    class="onboarding-step__brand-pipe">|</span><span class="onboarding-step__brand-n">23</span>
+            </div>
+            <h1 class="onboarding-step__title">{{ steps[4].title }}</h1>
+            <p class="onboarding-step__subtitle">{{ steps[4].subtitle }}</p>
+            <p class="onboarding-step__body">
+                Head to Search to add your first pair, or check Drops for what's releasing next.
+            </p>
+            <button class="onboarding-btn onboarding-btn--primary" [disabled]="saving()" (click)="finish()">
+                {{ saving() ? 'Loading…' : 'Enter the Vault' }}
+            </button>
+        </div>
+        }
+
+    </div>
+</div>

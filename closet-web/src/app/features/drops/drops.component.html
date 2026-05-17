@@ -1,0 +1,90 @@
+<div class="page drops-page">
+    <!-- Brand filter chips -->
+    <div class="chips-scroll">
+        @for (brand of brands; track brand) {
+        <button class="chip" [class.chip--active]="brandFilter() === brand" (click)="setBrand(brand)">
+            {{ brand === 'all' ? 'All Brands' : brand }}
+        </button>
+        }
+    </div>
+
+    <!-- Month navigation -->
+    <div class="month-nav">
+        <button class="month-nav__btn" (click)="prevMonth()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+        </button>
+        <span class="month-nav__label">{{ monthLabel() }}</span>
+        <button class="month-nav__btn" (click)="nextMonth()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Calendar grid -->
+    <div class="calendar">
+        <div class="calendar__header">
+            @for (day of weekdays; track day) {
+            <span class="calendar__weekday">{{ day }}</span>
+            }
+        </div>
+
+        <div class="calendar__grid">
+            @for (day of calendarDays(); track day.dateStr) {
+            <div class="calendar__cell" [class.calendar__cell--today]="day.isToday"
+                [class.calendar__cell--past]="day.isPast" [class.calendar__cell--other-month]="!isCurrentMonth(day)"
+                [class.calendar__cell--has-drop]="day.drops.length > 0">
+                <span class="calendar__date">{{ day.date.getDate() }}</span>
+                @if (day.drops.length > 0) {
+                <span class="calendar__dot" [attr.data-count]="day.drops.length > 1 ? day.drops.length : null"></span>
+                }
+            </div>
+            }
+        </div>
+    </div>
+
+    <!-- Upcoming drops list for this month -->
+    <h3 class="section-title">This Month</h3>
+
+    @if (upcomingList().length === 0) {
+    <div class="empty-state">
+        <p>No drops scheduled this month.</p>
+    </div>
+    }
+
+    <div class="drop-list">
+        @for (drop of upcomingList(); track drop.id) {
+        <div class="drop-card">
+            @if (drop.imageUrl) {
+            <img class="drop-card__img" [src]="drop.imageUrl" [alt]="drop.name" loading="lazy" />
+            } @else {
+            <div class="drop-card__img drop-card__img--placeholder"></div>
+            }
+            <div class="drop-card__info">
+                <p class="drop-card__date">{{ drop.releaseDate | date:'MMM d' }}@if (drop.releaseTime) { · {{
+                    drop.releaseTime }} }</p>
+                <p class="drop-card__name">{{ drop.name }}</p>
+                <p class="drop-card__meta">{{ drop.brand }} · \${{ drop.retailPrice }}</p>
+                @if (drop.where) {
+                <p class="drop-card__where">{{ drop.where }}</p>
+                }
+            </div>
+            <button class="notify-btn" [class.notify-btn--active]="isNotified(drop.id)"
+                (click)="toggleNotify(drop, $event)"
+                [attr.aria-label]="isNotified(drop.id) ? 'Remove reminder' : 'Set reminder'">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    @if (isNotified(drop.id)) {
+                    <path fill="currentColor" stroke="none" d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    } @else {
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+                    }
+                </svg>
+            </button>
+        </div>
+        }
+    </div>
+</div>
