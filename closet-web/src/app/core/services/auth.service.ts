@@ -5,9 +5,9 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   sendPasswordResetEmail,
-  GoogleAuthProvider,
   OAuthProvider,
   signInWithPopup,
+  signInWithCredential,
   onAuthStateChanged,
   updateProfile,
   deleteUser,
@@ -16,6 +16,17 @@ import {
 import { Firestore, doc, setDoc } from '@angular/fire/firestore';
 import { Router } from '@angular/router';
 import { UserService } from './user.service';
+import { NativeBridgeService } from './native-bridge.service';
+
+type NativeSocialProvider = 'apple';
+
+interface NativeAuthResult {
+  provider: NativeSocialProvider;
+  requestId: string;
+  idToken?: string;
+  nonce?: string;
+  error?: string;
+}
 
 const INITIAL_SETTINGS = {
   themeColor: '#F97316',
@@ -36,6 +47,7 @@ export class AuthService {
   private router = inject(Router);
   private userService = inject(UserService);
   private zone = inject(NgZone);
+  private bridge = inject(NativeBridgeService);
 
   readonly currentUser = signal<FirebaseUser | null>(null);
   readonly isLoggedIn = computed(() => this.currentUser() !== null);
@@ -77,9 +89,18 @@ export class AuthService {
     return signInWithEmailAndPassword(this.auth, email, password).then(() => { });
   }
 
-  async loginWithGoogle(): Promise<void> {
-    const result = await signInWithPopup(this.auth, new GoogleAuthProvider());
-    const user = result.user;
+  async loginWithApple(): Promise<void> {
+    const nativeHandled = await this.loginWithNativeSocial('apple');
+    if (!nativeHandled) {
+      const provider = new OAuthProvider('apple.com');
+      provider.addScope('email');
+      provider.addScope('name');
+      const result = await signInWithPopup(this.auth, provider);
+      await this.ensureSocialProfile(result.user);
+    }
+  }
+
+  private async ensureSocialProfile(user: FirebaseUser): Promise<void> {
     const existing = await this.userService.getPublicProfile(user.uid);
     if (!existing?.username) {
       const username = (user.displayName ?? '').toLowerCase().replace(/\s+/g, '');
@@ -94,24 +115,50 @@ export class AuthService {
     }
   }
 
-  async loginWithApple(): Promise<void> {
-    const provider = new OAuthProvider('apple.com');
-    provider.addScope('email');
-    provider.addScope('name');
-    const result = await signInWithPopup(this.auth, provider);
-    const user = result.user;
-    const existing = await this.userService.getPublicProfile(user.uid);
-    if (!existing?.username) {
-      const username = (user.displayName ?? '').toLowerCase().replace(/\s+/g, '');
-      await Promise.all([
-        this.userService.upsertPublicProfile(user.uid, {
-          uid: user.uid,
-          username,
-          photoURL: user.photoURL ?? '',
-        }),
-        setDoc(doc(this.fs, `userSettings/${user.uid}`), { ...INITIAL_SETTINGS, username }),
-      ]);
+  private async loginWithNativeSocial(provider: NativeSocialProvider): Promise<boolean> {
+    if (!this.bridge.isNative) return false;
+
+    const result = await this.requestNativeSocial(provider);
+    if (result.error) throw new Error(result.error);
+
+    if (!result.idToken) {
+      throw new Error('Apple sign-in did not return an identity token');
     }
+    const appleProvider = new OAuthProvider('apple.com');
+    const credential = appleProvider.credential({
+      idToken: result.idToken,
+      rawNonce: result.nonce,
+    });
+    const authResult = await signInWithCredential(this.auth, credential);
+    await this.ensureSocialProfile(authResult.user);
+    return true;
+  }
+
+  private requestNativeSocial(provider: NativeSocialProvider): Promise<NativeAuthResult> {
+    const requestId = `${provider}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    const timeoutMs = 60_000;
+
+    return new Promise<NativeAuthResult>((resolve, reject) => {
+      const timeout = window.setTimeout(() => {
+        cleanup();
+        reject(new Error(`${provider} sign-in timed out`));
+      }, timeoutMs);
+
+      const handler = (event: Event) => {
+        const detail = (event as CustomEvent<NativeAuthResult>).detail;
+        if (!detail || detail.provider !== provider || detail.requestId !== requestId) return;
+        cleanup();
+        resolve(detail);
+      };
+
+      const cleanup = () => {
+        window.clearTimeout(timeout);
+        window.removeEventListener('nativeAuthResult', handler);
+      };
+
+      window.addEventListener('nativeAuthResult', handler);
+      this.bridge.send('socialAuth', { provider, requestId });
+    });
   }
 
   async forgotPassword(email: string): Promise<void> {

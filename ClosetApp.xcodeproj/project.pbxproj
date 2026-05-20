@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		04797E4B2087E781A84B83C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 33032AEE8255D314279997F1 /* GoogleService-Info.plist */; };
+		06E7D3495C8B4412BEA30195 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = B7DF67E40A714A6E9F37B6AF /* FirebaseAuth */; };
 		0757D48D49CF43721EBF2BC7 /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3BF62A648B5F91025385A920 /* FirebaseFirestore */; };
 		373133250AECC5B7FA11A19A /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A7701AC6DDC53748A7F5ED88 /* FirebaseStorage */; };
 		401765F1ECEF2D2937B1634E /* WebBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC72A4F75AA3AB6C9D31FAB9 /* WebBridge.swift */; };
@@ -37,6 +38,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06E7D3495C8B4412BEA30195 /* FirebaseAuth in Frameworks */,
 				0757D48D49CF43721EBF2BC7 /* FirebaseFirestore in Frameworks */,
 				373133250AECC5B7FA11A19A /* FirebaseStorage in Frameworks */,
 			);
@@ -112,6 +114,7 @@
 			);
 			name = ClosetApp;
 			packageProductDependencies = (
+				B7DF67E40A714A6E9F37B6AF /* FirebaseAuth */,
 				3BF62A648B5F91025385A920 /* FirebaseFirestore */,
 				A7701AC6DDC53748A7F5ED88 /* FirebaseStorage */,
 			);
@@ -224,6 +227,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ClosetApp/ClosetApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1.2;
 				DEVELOPMENT_TEAM = PPLU8J5RDW;
@@ -235,7 +239,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Kendall-lewis.Vault23";
+				PRODUCT_BUNDLE_IDENTIFIER = "Kendall-lewis.Drip-Drops";
 				PRODUCT_NAME = Vault23;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -246,6 +250,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ClosetApp/ClosetApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1.2;
 				DEVELOPMENT_TEAM = PPLU8J5RDW;
@@ -257,7 +262,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 3.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Kendall-lewis.Vault23";
+				PRODUCT_BUNDLE_IDENTIFIER = "Kendall-lewis.Drip-Drops";
 				PRODUCT_NAME = Vault23;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -420,6 +425,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B7DF67E40A714A6E9F37B6AF /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6703F96C299A3C3BE59C0663 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
 		3BF62A648B5F91025385A920 /* FirebaseFirestore */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6703F96C299A3C3BE59C0663 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

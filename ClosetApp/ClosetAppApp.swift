@@ -1,5 +1,6 @@
 import SwiftUI
 import FirebaseCore
+import FirebaseAuth
 import UserNotifications
 import UIKit
 
@@ -14,6 +15,9 @@ struct Vault23App: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onOpenURL { url in
+                    _ = Auth.auth().canHandle(url)
+                }
         }
     }
 }
@@ -45,5 +49,16 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
             object: nil,
             userInfo: ["token": token]
         )
+    }
+
+    func application(
+        _ app: UIApplication,
+        open url: URL,
+        options: [UIApplication.OpenURLOptionsKey: Any] = [:]
+    ) -> Bool {
+        if Auth.auth().canHandle(url) {
+            return true
+        }
+        return false
     }
 }

@@ -2,6 +2,9 @@ import WebKit
 import VisionKit
 import OSLog
 import UIKit
+import AuthenticationServices
+import CryptoKit
+import Security
 
 private let log = Logger(subsystem: "com.kndl.Vault23", category: "WebBridge")
 
@@ -15,11 +18,15 @@ final class WebBridge: NSObject,
     WKNavigationDelegate,
     DataScannerViewControllerDelegate,
     UIImagePickerControllerDelegate,
-    UINavigationControllerDelegate {
+    UINavigationControllerDelegate,
+    ASAuthorizationControllerDelegate,
+    ASAuthorizationControllerPresentationContextProviding {
 
     weak var webView: WKWebView?
     private weak var presentedScanner: DataScannerViewController?
     private let onLoaded: (() -> Void)?
+    private var pendingAppleRequestId: String?
+    private var pendingAppleNonce: String?
 
     // MARK: - Lifecycle
 
@@ -101,8 +108,129 @@ final class WebBridge: NSObject,
             openImagePicker(source: .camera)
         case "openGallery":
             openImagePicker(source: .photoLibrary)
+        case "socialAuth":
+            handleSocialAuth(payload: payload)
         default:
             log.warning("Unhandled bridge action: \(action)")
+        }
+    }
+
+    private func handleSocialAuth(payload: Any?) {
+        guard let dict = payload as? [String: Any],
+              let provider = dict["provider"] as? String,
+              let requestId = dict["requestId"] as? String
+        else {
+            log.warning("Malformed socialAuth payload")
+            return
+        }
+
+        switch provider {
+        case "apple":
+            startAppleSignIn(requestId: requestId)
+        default:
+            dispatchNativeAuthResult([
+                "provider": provider,
+                "requestId": requestId,
+                "error": "Unsupported provider: \(provider)"
+            ])
+        }
+    }
+
+    private func startAppleSignIn(requestId: String) {
+        let nonce = randomNonceString()
+        pendingAppleRequestId = requestId
+        pendingAppleNonce = nonce
+
+        let request = ASAuthorizationAppleIDProvider().createRequest()
+        request.requestedScopes = [.fullName, .email]
+        request.nonce = sha256(nonce)
+
+        let controller = ASAuthorizationController(authorizationRequests: [request])
+        controller.delegate = self
+        controller.presentationContextProvider = self
+        controller.performRequests()
+    }
+
+    func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithAuthorization authorization: ASAuthorization
+    ) {
+        guard let credential = authorization.credential as? ASAuthorizationAppleIDCredential,
+              let requestId = pendingAppleRequestId
+        else {
+            resetAppleState()
+            return
+        }
+
+        guard let tokenData = credential.identityToken,
+              let idToken = String(data: tokenData, encoding: .utf8),
+              !idToken.isEmpty
+        else {
+            dispatchNativeAuthResult([
+                "provider": "apple",
+                "requestId": requestId,
+                "error": "Apple sign-in did not return an identity token"
+            ])
+            resetAppleState()
+            return
+        }
+
+        let nonce = pendingAppleNonce ?? ""
+        dispatchNativeAuthResult([
+            "provider": "apple",
+            "requestId": requestId,
+            "idToken": idToken,
+            "nonce": nonce
+        ])
+        resetAppleState()
+    }
+
+    func authorizationController(
+        controller: ASAuthorizationController,
+        didCompleteWithError error: Error
+    ) {
+        let requestId = pendingAppleRequestId ?? ""
+        dispatchNativeAuthResult([
+            "provider": "apple",
+            "requestId": requestId,
+            "error": error.localizedDescription
+        ])
+        resetAppleState()
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        if let window = webView?.window {
+            return window
+        }
+
+        let activeScene = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }
+
+        if let keyWindow = activeScene?.windows.first(where: { $0.isKeyWindow }) {
+            return keyWindow
+        }
+
+        return activeScene?.windows.first ?? UIWindow()
+    }
+
+    private func resetAppleState() {
+        pendingAppleRequestId = nil
+        pendingAppleNonce = nil
+    }
+
+    private func dispatchNativeAuthResult(_ detail: [String: String]) {
+        guard JSONSerialization.isValidJSONObject(detail),
+              let data = try? JSONSerialization.data(withJSONObject: detail),
+              let json = String(data: data, encoding: .utf8)
+        else {
+            log.error("Failed to serialize native auth result")
+            return
+        }
+
+        let js = "window.dispatchEvent(new CustomEvent('nativeAuthResult', { detail: \(json) }))"
+        webView?.evaluateJavaScript(js) { _, error in
+            if let error { log.error("Failed to dispatch nativeAuthResult: \(error.localizedDescription)") }
         }
     }
 
@@ -242,6 +370,42 @@ final class WebBridge: NSObject,
             if let error { log.error("Failed to dispatch apnsToken: \(error.localizedDescription)") }
         }
     }
+}
+
+private func randomNonceString(length: Int = 32) -> String {
+    let charset = Array("0123456789ABCDEFGHIJKLMNOPQRSTUVXYZabcdefghijklmnopqrstuvwxyz-._")
+    var result = ""
+    var remainingLength = length
+
+    while remainingLength > 0 {
+        let randoms: [UInt8] = (0..<16).map { _ in
+            var random: UInt8 = 0
+            let status = SecRandomCopyBytes(kSecRandomDefault, 1, &random)
+            if status != errSecSuccess {
+                fatalError("Unable to generate nonce. SecRandomCopyBytes failed with status \(status)")
+            }
+            return random
+        }
+
+        randoms.forEach { random in
+            if remainingLength == 0 {
+                return
+            }
+
+            if random < charset.count {
+                result.append(charset[Int(random)])
+                remainingLength -= 1
+            }
+        }
+    }
+
+    return result
+}
+
+private func sha256(_ input: String) -> String {
+    let inputData = Data(input.utf8)
+    let hashedData = SHA256.hash(data: inputData)
+    return hashedData.compactMap { String(format: "%02x", $0) }.joined()
 }
 
 // MARK: - UIImage helpers

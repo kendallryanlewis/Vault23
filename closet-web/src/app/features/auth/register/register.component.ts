@@ -34,19 +34,6 @@ export class RegisterComponent {
         }
     }
 
-    async onGoogle(): Promise<void> {
-        this.loading.set(true);
-        this.error.set('');
-        try {
-            await this.auth.loginWithGoogle();
-            this.router.navigate(['/app/home']);
-        } catch (e: any) {
-            this.error.set(e.message ?? 'Google sign-in failed');
-        } finally {
-            this.loading.set(false);
-        }
-    }
-
     async onApple(): Promise<void> {
         this.loading.set(true);
         this.error.set('');
